@@ -70,8 +70,9 @@ class SharedKeyProviderTests: XCTestCase {
         let formatter = DateFormatter()
         formatter.timeZone = TimeZone(identifier: "UTC")
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC
-        let date = formatter.date(from: headerValue!)!
-        XCTAssertTrue(date < Date())
+        let date = formatter.date(from: headerValue!)
+        XCTAssertNotNil(date)
+        XCTAssertTrue(date! < Date())
     }
 
 }
