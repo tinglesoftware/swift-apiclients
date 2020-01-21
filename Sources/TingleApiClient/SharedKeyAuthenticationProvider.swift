@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CryptoKit
+import CryptoSwift
 
 public class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider {
     private static let DEFAULT_DATE_HEADER_NAME = "x-ms-date"
@@ -64,29 +64,24 @@ public class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider {
 
 
     private func sign(method: String, contentLength: Int64, contentType: String, date: String, resource: String) -> String? {
-        if #available(iOS 13.0, OSX 10.15, *) {
-            // generate secret key
-            let key = SymmetricKey(data: keyData)
-            var hmac = HMAC<SHA256>(key: key)
 
-            // generate data to hash
-            let parts = [method, "\(contentLength)", contentType, "\(dateHeaderName):\(date)", resource]
-            let stringToHash = parts.joined(separator: "\n")
-            let dataToHash = stringToHash.data(using: .ascii, allowLossyConversion: false)!
-
-            // hash the data
-            hmac.update(data: dataToHash)
-            let hashed = hmac.finalize()
-            let bytes = hashed.compactMap { $0 }
-            let hashedData = Data(bytes)
-
+        // generate data to hash
+        let parts = [method, "\(contentLength)", contentType, "\(dateHeaderName):\(date)", resource]
+        let stringToHash = parts.joined(separator: "\n")
+        let dataToHash = stringToHash.data(using: .ascii, allowLossyConversion: false)!
+        
+        let key = keyData.compactMap { $0 }
+        let bytes = dataToHash.compactMap { $0 }
+        
+        // hash the data
+        let hmac = HMAC(key: key, variant: .sha256)
+        if let hashed = try? hmac.authenticate(bytes) {
+            let hashedData = Data(hashed.compactMap { $0 })
+            
             // encode to base 64
             return hashedData.base64EncodedString()
-
-        } else {
-            // Fallback on earlier versions
-
-            return nil
         }
+        
+        return nil
     }
 }
