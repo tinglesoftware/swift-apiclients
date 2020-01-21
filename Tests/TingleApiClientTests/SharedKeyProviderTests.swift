@@ -31,7 +31,7 @@ class SharedKeyProviderTests: XCTestCase {
         let provider = SharedKeyAuthenticationProvider(base64Key: "TiR0p2ZwnUuBGBEDU5LADWBXpxXy3Y9Aq4Fb1nD+6CM=")
 
         // invoke the authentication provider
-        provider.authenticate(request: &request)
+        _ = provider.process(request: &request)
 
         // assert values
         let headerValue = request.value(forHTTPHeaderField: "Authorization")
@@ -52,7 +52,7 @@ class SharedKeyProviderTests: XCTestCase {
         let provider = SharedKeyAuthenticationProvider(base64Key: "TiR0p2ZwnUuBGBEDU5LADWBXpxXy3Y9Aq4Fb1nD+6CM=")
 
         // invoke the authentication provider
-        provider.authenticate(request: &request)
+        _ = provider.process(request: &request)
 
         // assert values
         let headerValue = request.value(forHTTPHeaderField: "Authorization")
@@ -70,7 +70,7 @@ class SharedKeyProviderTests: XCTestCase {
         let provider = SharedKeyAuthenticationProvider(base64Key: "TiR0p2ZwnUuBGBEDU5LADWBXpxXy3Y9Aq4Fb1nD+6CM=")
 
         // invoke the authentication provider
-        provider.authenticate(request: &request)
+        _ = provider.process(request: &request)
 
         // assert values
         let headerValue = request.value(forHTTPHeaderField: "x-ms-date")

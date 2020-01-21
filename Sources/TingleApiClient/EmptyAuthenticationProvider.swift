@@ -14,7 +14,8 @@ import Foundation
  * of a response message `ResourceResponse`
 */
 public class EmptyAuthenticationProvider: IAuthenticationProvider {
-    public func authenticate(request: inout URLRequest) {
+    public func process(request: inout URLRequest) -> URLRequest {
         // nothing to do here
+        return request
     }
 }

@@ -16,10 +16,11 @@ public class AuthenticationHeaderProvider: IAuthenticationProvider {
         self.scheme = scheme
     }
     
-    public func authenticate(request: inout URLRequest) {
+    public func process(request: inout URLRequest) -> URLRequest {
         let parameter = getParameter(request: &request)
         let headerValue = "\(scheme) \(parameter)"
         request.setValue(headerValue, forHTTPHeaderField: "Authorization")
+        return request
     }
     
     open func getParameter(request: inout URLRequest) -> String {

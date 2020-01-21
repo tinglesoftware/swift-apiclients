@@ -8,6 +8,11 @@
 import Foundation
 
 /**
+ * Middleware for performing authentication
+ */
+typealias IAuthenticationProvider = TingleApiClientMiddleware
+
+/**
  * A convenience class for making HTTP requests. The implementation of this uses `URLRequest` and `URLSession` internally.
  *
  */
@@ -19,11 +24,6 @@ public class TingleApiClient {
     private let session: URLSession
     
     /**
-     * The middleware for setting authentication information before sending the request
-     */
-    private let authenticationProvider: IAuthenticationProvider
-    
-    /**
      * The instance of `JSONDecoder` to use in creating objects from JSON payloads
      */
     private let decoder: JSONDecoder = JSONDecoder()
@@ -33,17 +33,30 @@ public class TingleApiClient {
      */
     public let encoder: JSONEncoder = JSONEncoder()
     
+    /**
+     * The instances of `TingleApiClientMiddleware` to be executed in present order for outgoing requests and reverse for incoming requests
+     */
+    private var middlewareItems = [TingleApiClientMiddleware]()
+    
     init(session: URLSession? = nil, authenticationProvider: IAuthenticationProvider? = nil)
     {
         // set the URLSession and default to the shared one when set to nil
         self.session = session ?? URLSession.shared
         
-        // set the auhentication provider and default to empty when set to nil
-        self.authenticationProvider = authenticationProvider ?? EmptyAuthenticationProvider()
+        // apped the authentication middleware and default to empty when set to nil
+        middlewareItems.append(authenticationProvider ?? EmptyAuthenticationProvider())
+        
+        // build the middleware items
+        let otherItems = buildMiddleware()
+        if (!otherItems.isEmpty) {
+            middlewareItems.append(contentsOf: otherItems)
+        }
         
         // setup the encoder and decoder
         setupJsonSerialization(encoder: encoder, decoder: decoder)
     }
+    
+    open func buildMiddleware() -> [TingleApiClientMiddleware] { [TingleApiClientMiddleware]() }
     
     open func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder) {
         // nothing to do here, the implementing class shall override to specify the settings for the encoder and decoder
@@ -85,11 +98,14 @@ public class TingleApiClient {
                                                       _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable, TProblem: Decodable, TResourceResponse: CustomResourceResponse<TResource, TProblem> {
             
-            // first execute the authentication provider
-            authenticationProvider.authenticate(request: &request)
+            // first execute all middleware in sequence
+            var actualRequest = request
+            for m in middlewareItems {
+                actualRequest = m.process(request: &actualRequest)
+            }
             
             // now send the request over the wire
-            let task = session.dataTask(with: request) { (data, response, error) in
+            let task = session.dataTask(with: actualRequest) { (data, response, error) in
                 // prepare the variables for resource and problem
                 var resource: TResource? = nil
                 var problem: TProblem? = nil

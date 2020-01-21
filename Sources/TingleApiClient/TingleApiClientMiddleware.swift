@@ -1,16 +1,17 @@
 //
-//  IAuthenticationProvider.swift
+//  TingleApiClientMiddleware.swift
+//  
 //
-//  Created by Maxwell Weru on 1/9/20.
+//  Created by Maxwell Weru on 1/16/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import Foundation
 
-public protocol IAuthenticationProvider {
+public protocol TingleApiClientMiddleware {
     /**
      * Authenticate a request before sending
      * - Parameter request the request that needs to be authenticated before sending
      */
-    func authenticate(request: inout URLRequest) -> Void
+    func process(request: inout URLRequest) -> URLRequest
 }
