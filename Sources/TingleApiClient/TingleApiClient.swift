@@ -52,7 +52,7 @@ public class TingleApiClient {
     }
     
     @discardableResult
-    func send<TResource>(_ request: inout URLRequest, _ completionHandler: @escaping (ResourceResponse<TResource>) -> Void) -> URLSessionTask
+    func send<TResource>(_ request: inout URLRequest, _ completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
             // make the result builder
@@ -67,7 +67,7 @@ public class TingleApiClient {
     
     @discardableResult
     func send<TResource, TProblem>(_ request: inout URLRequest,
-                                   _ completionHandler: @escaping (CustomResourceResponse<TResource, TProblem>) -> Void) -> URLSessionTask
+                                   _ completionHandler: @escaping (CustomResourceResponse<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
             // make the result builder
@@ -83,7 +83,7 @@ public class TingleApiClient {
     @discardableResult
     func send<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
                                                       _ resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
-                                                      _ completionHandler: @escaping (TResourceResponse) -> Void) -> URLSessionTask
+                                                      _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable, TProblem: Decodable, TResourceResponse: CustomResourceResponse<TResource, TProblem> {
             
             // first execute the authentication provider
@@ -94,30 +94,32 @@ public class TingleApiClient {
                 // prepare the variables for resource and problem
                 var resource: TResource? = nil
                 var problem: TProblem? = nil
+                var result: TResourceResponse? = nil
                 
                 // cast response to the HTTP version
-                let response = response as! HTTPURLResponse
-                
-                // get the status code
-                let statusCode = response.statusCode
-                
-                // if the response was successful, decode the resource, else the problem
-                if (data != nil && data!.count > 0) {
-                    if (200..<300 ~= statusCode) {
-                        resource = try! self.decoder.decode(TResource.self, from: data!)
-                    } else {
-                        problem = try! self.decoder.decode(TProblem.self, from: data!)
+                if let response = response as? HTTPURLResponse {
+                    
+                    // get the status code
+                    let statusCode = response.statusCode
+                    
+                    // if the response was successful, decode the resource, else the problem
+                    if (data != nil && data!.count > 0) {
+                        if (200..<300 ~= statusCode) {
+                            resource = try! self.decoder.decode(TResource.self, from: data!)
+                        } else {
+                            problem = try! self.decoder.decode(TProblem.self, from: data!)
+                        }
                     }
+                    
+                    // get the headers
+                    let headers = response.allHeaderFields
+                    
+                    // generate the result
+                    result = resultBuilder(statusCode, headers, resource, problem)
                 }
                 
-                // get the headers
-                let headers = response.allHeaderFields
-                
-                // generate the result
-                let result = resultBuilder(statusCode, headers, resource, problem)
-                
                 // invoke the completion handler
-                completionHandler(result)
+                completionHandler(result, error)
             }
             
             task.resume()
