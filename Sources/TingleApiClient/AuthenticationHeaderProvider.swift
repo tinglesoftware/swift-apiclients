@@ -26,4 +26,8 @@ public class AuthenticationHeaderProvider: IAuthenticationProvider {
     open func getParameter(request: inout URLRequest) -> String {
         fatalError("getParameter must be implemented")
     }
+    
+    public func process(response: URLResponse?, data: Data?, error: Error?) {
+        
+    }
 }

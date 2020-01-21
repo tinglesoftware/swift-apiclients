@@ -18,4 +18,8 @@ public class EmptyAuthenticationProvider: IAuthenticationProvider {
         // nothing to do here
         return request
     }
+    
+    public func process(response: URLResponse?, data: Data?, error: Error?) {
+        
+    }
 }

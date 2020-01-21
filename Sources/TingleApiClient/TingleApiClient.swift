@@ -99,13 +99,19 @@ public class TingleApiClient {
         where TResource: Decodable, TProblem: Decodable, TResourceResponse: CustomResourceResponse<TResource, TProblem> {
             
             // first execute all middleware in sequence
-            var actualRequest = request
+            var outgoingRequest = request
             for m in middlewareItems {
-                actualRequest = m.process(request: &actualRequest)
+                outgoingRequest = m.process(request: &outgoingRequest)
             }
             
             // now send the request over the wire
-            let task = session.dataTask(with: actualRequest) { (data, response, error) in
+            let task = session.dataTask(with: outgoingRequest) { (data, response, error) in
+                
+                // pass the response thourhg the middleware in reverse order
+                self.middlewareItems.reversed().forEach { (m: TingleApiClientMiddleware) in
+                    m.process(response: response, data: data, error: error)
+                }
+                
                 // prepare the variables for resource and problem
                 var resource: TResource? = nil
                 var problem: TProblem? = nil
@@ -141,4 +147,39 @@ public class TingleApiClient {
             
             return task
     }
+    
+//    typealias RequestHandler = (inout URLRequest) -> URLRequest
+////    let rootRequestHandler: RequestHandler = { $0 }
+////
+////    func makeChain(next: RequestHandler) -> RequestHandler {
+////
+////        return rootRequestHandler
+////    }
+//
+//    func makeChain2(next: RequestHandler, request: inout URLRequest) -> URLRequest {
+//        return next(&request)
+//    }
+//
+//    func makeChain3(next: @escaping RequestHandler, request: inout URLRequest) -> RequestHandler {
+//        return { next(&$0) }
+//    }
+//
+//    func makeOutgoingChain(handlers: [RequestHandler], request: inout URLRequest) -> RequestHandler {
+////        var prev = handlers.isEmpty ? rootRequestHandler : handlers.first
+////        var result: RequestHandler = { $0 }
+//        var result = handlers.first
+//        for i in 0..<(handlers.count - 1) {
+//            let current = handlers[i]
+//            let nextIndex = i + 1
+//            if (nextIndex < (handlers.count - 1)) {
+//                let next = handlers[nextIndex]
+//                result = {
+//                    next($0)
+//                }
+//            }
+//        }
+////        for h in handlers {
+////            makeChain3(next: h, request: &URLRequestrequest)
+////        }
+//    }
 }
