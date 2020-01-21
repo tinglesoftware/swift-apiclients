@@ -12,14 +12,6 @@ import XCTest
 
 class SharedKeyProviderTests: XCTestCase {
 
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
     func testProviderWorksForGet() {
         // prepare the http request message
         let url = URL(string: "https://scoppe.people.tinglesoftware.com/api/v1.1/iprs?idNumber=12345678")!
@@ -80,13 +72,6 @@ class SharedKeyProviderTests: XCTestCase {
         formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC
         let date = formatter.date(from: headerValue!)!
         XCTAssertTrue(date < Date())
-    }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
     }
 
 }
