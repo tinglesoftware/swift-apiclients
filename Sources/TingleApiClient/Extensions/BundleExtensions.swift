@@ -14,7 +14,7 @@ extension Bundle {
      *
      * The bundle identifier is defined by the `CFBundleShortVersionString` key in the bundle’s information property list.
      */
-    var shortBundleVersion: String? {
+    public var shortBundleVersion: String? {
         return infoDictionary?["CFBundleShortVersionString"] as? String
     }
     
@@ -23,7 +23,7 @@ extension Bundle {
      *
      * The bundle identifier is defined by the `CFBundleVersion` key in the bundle’s information property list.
     */
-    var bundleVersion: String? {
+    public var bundleVersion: String? {
         return infoDictionary?["CFBundleVersion"] as? String
     }
 }
