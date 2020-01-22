@@ -10,7 +10,7 @@ import Foundation
 /**
  * Middleware for performing authentication
  */
-typealias IAuthenticationProvider = TingleApiClientMiddleware
+public typealias IAuthenticationProvider = TingleApiClientMiddleware
 
 /**
  * A convenience class for making HTTP requests. The implementation of this uses `URLRequest` and `URLSession` internally.
