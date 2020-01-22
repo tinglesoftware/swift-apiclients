@@ -177,12 +177,12 @@ func func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder)
 Setups the instances of  `JSONEncoder` and `JSONDecoder` already created. These instances are used to encode/decode requests/responses respectively in the `send` functions
 
 ```swift
-func sendRequest<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
-                                                         _ resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
-                                                         _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
+func sendRequest<TResource, TResourceResponse>(_ request: inout URLRequest,
+                                               _ resultBuilder: @escaping (Int, Any, TResource?, HttpApiResponseProblem?) -> TResourceResponse,
+                                               _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
 ```
 
-This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
+This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `HttpApiResponseProblem`.
 These two are supplied to the `resultBuilder`  closure to produce a `TResourceResponse`.
 When the network call fails such as there being no internet access or being unable to reach the server, the `resultBuilder` closure is not called. Instead,
 the `completionHandler` closure is called with the `TResourceResponse?` argument set to `nil` and the `Error?` argument not `nil`.
@@ -190,16 +190,8 @@ When the network call succeeds, the `resultBuilder` closure is called to produce
 `completionHandler` closure but the `Error?` parameter is set to `nil`.
 
 ```swift
-func sendRequest<TResource, TProblem>(_ request: inout URLRequest,
-                                      _ completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+func sendRequest<TResource>(_ request: inout URLRequest,
+                            _ completionHandler: @escaping (AnyResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
 ```
 
-This is similar to calling the `sendRequest` method above but instead produces a `ResourceResponseBase<TResource, TProblem>`  for the `TResourceResponse`
-
-
-```swift
-func sendRequest<TResource, TProblem>(_ request: inout URLRequest,
-                                      _ completionHandler: @escaping (ResourceResponse<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
-```
-
-This is similar to calling the `sendRequest` method above but instead produces a `ResourceResponse<TResource, TProblem>`  for the `TResourceResponse`
+This is similar to calling the `sendRequest` method above but instead produces a `AnyResourceResponse<TResource, TProblem>`  for the `TResourceResponse`
