@@ -12,7 +12,6 @@ import Foundation
  * The parameter set is gotten from the abstract method `getParameter(request: inout URLRequest)`.
  */
 open class AuthenticationHeaderProvider: IAuthenticationProvider {
-    private static let DEFAULT_SCHEME = "Bearer"
     
     /**
      * The scheme to be set in the `Authorization` header
@@ -23,7 +22,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
      * Initializes an instance of `AuthenticationHeaderProvider`
      * - Parameter scheme: The scheme to set in the `Authorization` header
      */
-    public init(_ scheme: String = DEFAULT_SCHEME) {
+    public init(_ scheme: String = "Bearer") {
         self.scheme = scheme
     }
     

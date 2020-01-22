@@ -50,7 +50,7 @@ extension HTTPURLResponse {
         }
     }
     
-    public var bodyHasUnknownEncoding: Bool {
+    var bodyHasUnknownEncoding: Bool {
         get {
             let contentEncoding = self.allHeaderFields["Content-Encoding"] as? String
             return (contentEncoding != nil
@@ -59,7 +59,7 @@ extension HTTPURLResponse {
         }
     }
     
-    public var hasBody: Bool {
+    var hasBody: Bool {
         get {
 //            // HEAD requests never yield a body regardless of the response headers.
 //            if (response.request().method().equals("HEAD")) {
