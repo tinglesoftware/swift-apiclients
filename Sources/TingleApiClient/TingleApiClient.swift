@@ -16,7 +16,7 @@ typealias IAuthenticationProvider = TingleApiClientMiddleware
  * A convenience class for making HTTP requests. The implementation of this uses `URLRequest` and `URLSession` internally.
  *
  */
-public class TingleApiClient {
+open class TingleApiClient {
     
     /**
      * The instance of `URLSession` to use in making requests of type `URLRequest`
