@@ -89,20 +89,20 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
                     logger.log(level: logLevel, "\(key): \(v)")
                 }
             })
-
-          if (!logBody || !hasRequestBody) {
-            logger.log(level: logLevel, "--> END \(request.httpMethod!)");
-          } else if (request.bodyHasUnknownEncoding) {
-            logger.log(level: logLevel, "--> END \(request.httpMethod!) (encoded body omitted)");
-          } else {
-            logger.log(level: logLevel, "");
-            if let bs = String(data: requestBody!, encoding: .utf8) {
-                logger.log(level: logLevel, Logger.Message(stringLiteral: bs));
-                logger.log(level: logLevel, "--> END \(request.httpMethod!) (\(requestBody!.count)-byte body)");
+            
+            if (!logBody || !hasRequestBody) {
+                logger.log(level: logLevel, "--> END \(request.httpMethod!)");
+            } else if (request.bodyHasUnknownEncoding) {
+                logger.log(level: logLevel, "--> END \(request.httpMethod!) (encoded body omitted)");
             } else {
-                logger.log(level: logLevel, "--> END \(request.httpMethod!) (binary \(requestBody!.count)-byte body omitted)");
+                logger.log(level: logLevel, "");
+                if let bs = String(data: requestBody!, encoding: .utf8) {
+                    logger.log(level: logLevel, Logger.Message(stringLiteral: bs));
+                    logger.log(level: logLevel, "--> END \(request.httpMethod!) (\(requestBody!.count)-byte body)");
+                } else {
+                    logger.log(level: logLevel, "--> END \(request.httpMethod!) (binary \(requestBody!.count)-byte body omitted)");
+                }
             }
-          }
         }
     }
     
@@ -120,7 +120,7 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
         
         let logBody = level == .BODY;
         let logHeaders = logBody || level == .HEADERS;
-
+        
         let tookMs: Int64 = -1 // TODO: find a way of getting how long it took to get the response
         let responseBody = data
         let contentLength = responseBody?.count ?? -1
@@ -146,81 +146,81 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
                 }
             })
             
-          if (!logBody || !response!.hasBody) {
-            logger.log(level: logLevel, "<-- END HTTP");
-          } else if (response!.bodyHasUnknownEncoding) {
-            logger.log(level: logLevel, "<-- END HTTP (encoded body omitted)");
-          } else {
-            let bs = String(data: responseBody!, encoding: .utf8)
-            if bs == nil {
-              logger.log(level: logLevel, "");
-              logger.log(level: logLevel, "<-- END HTTP (binary \(contentLength)-byte body omitted)");
-              return
+            if (!logBody || !response!.hasBody) {
+                logger.log(level: logLevel, "<-- END HTTP");
+            } else if (response!.bodyHasUnknownEncoding) {
+                logger.log(level: logLevel, "<-- END HTTP (encoded body omitted)");
+            } else {
+                let bs = String(data: responseBody!, encoding: .utf8)
+                if bs == nil {
+                    logger.log(level: logLevel, "");
+                    logger.log(level: logLevel, "<-- END HTTP (binary \(contentLength)-byte body omitted)");
+                    return
+                }
+                
+                if (contentLength != 0) {
+                    logger.log(level: logLevel, "");
+                    logger.log(level: logLevel, Logger.Message(stringLiteral: bs!));
+                }
+                
+                logger.log(level: logLevel, "<-- END HTTP (\(contentLength)-byte body)");
             }
-
-            if (contentLength != 0) {
-              logger.log(level: logLevel, "");
-              logger.log(level: logLevel, Logger.Message(stringLiteral: bs!));
-            }
-
-            logger.log(level: logLevel, "<-- END HTTP (\(contentLength)-byte body)");
-          }
         }
     }
     
     public enum Level {
-      /** No logs. */
+        /** No logs. */
         case NONE
-      /**
-       * Logs request and response lines.
-       *
-       * <p>Example:
-       * <pre>{@code
-       * --> POST /greeting http/1.1 (3-byte body)
-       *
-       * <-- 200 OK (22ms, 6-byte body)
-       * }</pre>
-       */
-      case BASIC
-      /**
-       * Logs request and response lines and their respective headers.
-       *
-       * <p>Example:
-       * <pre>{@code
-       * --> POST /greeting http/1.1
-       * Host: example.com
-       * Content-Type: plain/text
-       * Content-Length: 3
-       * --> END POST
-       *
-       * <-- 200 OK (22ms)
-       * Content-Type: plain/text
-       * Content-Length: 6
-       * <-- END HTTP
-       * }</pre>
-       */
-      case HEADERS
-      /**
-       * Logs request and response lines and their respective headers and bodies (if present).
-       *
-       * <p>Example:
-       * <pre>{@code
-       * --> POST /greeting http/1.1
-       * Host: example.com
-       * Content-Type: plain/text
-       * Content-Length: 3
-       *
-       * Hi?
-       * --> END POST
-       *
-       * <-- 200 OK (22ms)
-       * Content-Type: plain/text
-       * Content-Length: 6
-       *
-       * Hello!
-       * <-- END HTTP
-       * }</pre>
-       */
-      case BODY
+        /**
+         * Logs request and response lines.
+         *
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1 (3-byte body)
+         *
+         * <-- 200 OK (22ms, 6-byte body)
+         * }</pre>
+         */
+        case BASIC
+        /**
+         * Logs request and response lines and their respective headers.
+         *
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1
+         * Host: example.com
+         * Content-Type: plain/text
+         * Content-Length: 3
+         * --> END POST
+         *
+         * <-- 200 OK (22ms)
+         * Content-Type: plain/text
+         * Content-Length: 6
+         * <-- END HTTP
+         * }</pre>
+         */
+        case HEADERS
+        /**
+         * Logs request and response lines and their respective headers and bodies (if present).
+         *
+         * <p>Example:
+         * <pre>{@code
+         * --> POST /greeting http/1.1
+         * Host: example.com
+         * Content-Type: plain/text
+         * Content-Length: 3
+         *
+         * Hi?
+         * --> END POST
+         *
+         * <-- 200 OK (22ms)
+         * Content-Type: plain/text
+         * Content-Length: 6
+         *
+         * Hello!
+         * <-- END HTTP
+         * }</pre>
+         */
+        case BODY
     }
 }
