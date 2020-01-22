@@ -18,6 +18,9 @@ typealias IAuthenticationProvider = TingleApiClientMiddleware
  */
 open class TingleApiClient {
     
+    public typealias ResultBuildingHandler<T1, T2, T12> = (Int, Any, T1?, T2?) -> T12
+    public typealias CompletionHandler<T> = (T?, Error?) -> Void
+    
     /**
      * The instance of `URLSession` to use in making requests of type `URLRequest`
      */
@@ -99,17 +102,15 @@ open class TingleApiClient {
      */
     @discardableResult
     public func sendRequest<TResource: Decodable>(request: inout URLRequest,
-                                                  completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
+                                                  completionHandler: @escaping CompletionHandler<ResourceResponse<TResource>>) -> URLSessionTask
     {
-            
-            // make the result builder
-            let builder: (Int, Any, TResource?, HttpApiResponseProblem?) -> ResourceResponse<TResource> = {
-                (sc: Int, headers: Any, resource:TResource?, problem: HttpApiResponseProblem?) -> ResourceResponse<TResource> in
-                return ResourceResponse(statusCode: sc, headers: headers, resource: resource, problem: problem)
-            }
-            
-            // send the request
-            return sendRequest(request: &request, resultBuilder: builder, completionHandler: completionHandler)
+        
+        // make the result builder
+        let builder: ResultBuildingHandler<TResource, HttpApiResponseProblem, ResourceResponse<TResource>> = {
+            ResourceResponse(statusCode: $0, headers: $1, resource: $2, problem: $3)
+        }
+        // send the request
+        return sendRequest(request: &request, resultBuilder: builder, completionHandler: completionHandler)
     }
     
     /**
@@ -126,13 +127,12 @@ open class TingleApiClient {
      */
     @discardableResult
     public func sendRequest<TResource: Decodable, TProblem: Decodable>(request: inout URLRequest,
-                                                                       completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+                                                                       completionHandler: @escaping CompletionHandler<ResourceResponseBase<TResource, TProblem>>) -> URLSessionTask
     {
             
             // make the result builder
-            let builder: (Int, Any, TResource?, TProblem?) -> ResourceResponseBase<TResource, TProblem> = {
-                (sc: Int, headers: Any, resource:TResource?, problem: TProblem?) -> ResourceResponseBase<TResource, TProblem> in
-                return ResourceResponseBase(statusCode: sc, headers: headers, resource: resource, problem: problem)
+            let builder: ResultBuildingHandler<TResource, TProblem, ResourceResponseBase<TResource, TProblem>> = {
+                ResourceResponseBase(statusCode: $0, headers: $1, resource: $2, problem: $3)
             }
             
             // send the request
@@ -155,8 +155,8 @@ open class TingleApiClient {
     @discardableResult
     public func sendRequest<TResource: Decodable, TProblem: Decodable, TResourceResponse>(
         request: inout URLRequest,
-        resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
-        completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
+        resultBuilder: @escaping ResultBuildingHandler<TResource, TProblem, TResourceResponse>,
+        completionHandler: @escaping CompletionHandler<TResourceResponse>) -> URLSessionTask
     {
         
         // first execute all middleware in sequence
