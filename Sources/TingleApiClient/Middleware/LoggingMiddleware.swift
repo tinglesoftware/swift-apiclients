@@ -11,7 +11,7 @@ import Logging
 /**
  * An `TingleApiClientMiddleware` that logs the outgoing request (`URLRequest`) and the incoming response (`URLResponse`)
 */
-public class LoggingMiddleware: TingleApiClientMiddleware {
+public final class LoggingMiddleware: TingleApiClientMiddleware {
     
     private let logger: Logger
     
