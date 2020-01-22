@@ -18,7 +18,7 @@ typealias IAuthenticationProvider = TingleApiClientMiddleware
  */
 open class TingleApiClient {
     
-    public typealias ResultBuildingHandler<T1, T2, T12> = (Int, Any, T1?, T2?) -> T12
+    public typealias ResultBuildingHandler<T1, T2> = (Int, Any, T1?, HttpApiResponseProblem?) -> T2
     public typealias CompletionHandler<T> = (T?, Error?) -> Void
     
     /**
@@ -102,41 +102,15 @@ open class TingleApiClient {
      */
     @discardableResult
     public func sendRequest<TResource: Decodable>(request: inout URLRequest,
-                                                  completionHandler: @escaping CompletionHandler<ResourceResponse<TResource>>) -> URLSessionTask
+                                                  completionHandler: @escaping CompletionHandler<AnyResourceResponse<TResource>>) -> URLSessionTask
     {
-        
+
         // make the result builder
-        let builder: ResultBuildingHandler<TResource, HttpApiResponseProblem, ResourceResponse<TResource>> = {
-            ResourceResponse(statusCode: $0, headers: $1, resource: $2, problem: $3)
+        let builder: ResultBuildingHandler<TResource, AnyResourceResponse<TResource>> = {
+            AnyResourceResponse(statusCode: $0, headers: $1, resource: $2, problem: $3)
         }
         // send the request
         return sendRequest(request: &request, resultBuilder: builder, completionHandler: completionHandler)
-    }
-    
-    /**
-     * This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
-     * These two are supplied to the `resultBuilder`  closure to produce a `ResourceResponseBase<TResource, TProblem>`.
-     *
-     * When the network call fails such as there being no internet access or being unable to reach the server, a `ResourceResponseBase<TResource, TProblem>` is not created.
-     * The `completionHandler` closure is called with the `ResourceResponseBase<TResource, TProblem>?` argument set to `nil` and the `Error?` argument not `nil`.
-     * When the network call succeeds, a `ResourceResponseBase<TResource, TProblem>` is created and passed to the
-     * `completionHandler` closure but the `Error?` parameter is set to `nil`.
-     *
-     * - Parameter request: The request to be sent
-     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
-     */
-    @discardableResult
-    public func sendRequest<TResource: Decodable, TProblem: Decodable>(request: inout URLRequest,
-                                                                       completionHandler: @escaping CompletionHandler<ResourceResponseBase<TResource, TProblem>>) -> URLSessionTask
-    {
-            
-            // make the result builder
-            let builder: ResultBuildingHandler<TResource, TProblem, ResourceResponseBase<TResource, TProblem>> = {
-                ResourceResponseBase(statusCode: $0, headers: $1, resource: $2, problem: $3)
-            }
-            
-            // send the request
-            return sendRequest(request: &request, resultBuilder: builder, completionHandler: completionHandler)
     }
     
     /**
@@ -153,9 +127,9 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    public func sendRequest<TResource: Decodable, TProblem: Decodable, TResourceResponse>(
+    public func sendRequest<TResource: Decodable, TResourceResponse: ResourceResponse>(
         request: inout URLRequest,
-        resultBuilder: @escaping ResultBuildingHandler<TResource, TProblem, TResourceResponse>,
+        resultBuilder: @escaping ResultBuildingHandler<TResource, TResourceResponse>,
         completionHandler: @escaping CompletionHandler<TResourceResponse>) -> URLSessionTask
     {
         
@@ -175,7 +149,7 @@ open class TingleApiClient {
             
             // prepare the variables for resource and problem
             var resource: TResource? = nil
-            var problem: TProblem? = nil
+            var problem: HttpApiResponseProblem? = nil
             var result: TResourceResponse? = nil
             
             // cast response to the HTTP version
@@ -189,7 +163,7 @@ open class TingleApiClient {
                     if (200..<300 ~= statusCode) {
                         resource = try! self.decoder.decode(TResource.self, from: data!)
                     } else {
-                        problem = try! self.decoder.decode(TProblem.self, from: data!)
+                        problem = try! self.decoder.decode(HttpApiResponseProblem.self, from: data!)
                     }
                 }
                 

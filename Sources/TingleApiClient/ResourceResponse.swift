@@ -7,7 +7,28 @@
 
 import Foundation
 
-public class ResourceResponse<TResource>: ResourceResponseBase<TResource, HttpApiResponseProblem> {
+public protocol ResourceResponse {
+    associatedtype TResource
+    
+    /**
+     * The status code of the response
+     */
+    var statusCode: Int { get }
+    
+    /**
+     * The headers of the response
+     */
+    var headers: Any { get }
+    
+    /**
+     * The de-serialized resource
+     */
+    var resource: TResource? { get }
+    
+    /**
+     * The error de-serialized from the response
+     */
+    var problem: HttpApiResponseProblem? { get }
     
     /**
      * - Parameter statusCode: The status code of the response.
@@ -15,7 +36,12 @@ public class ResourceResponse<TResource>: ResourceResponseBase<TResource, HttpAp
      * - Parameter resource: The de-serialized resource
      * - Parameter problem: The error de-serialized from the response
      */
-    public override init(statusCode: Int, headers: Any, resource: TResource?, problem: HttpApiResponseProblem?) {
-        super.init(statusCode: statusCode, headers: headers, resource: resource, problem: problem)
-    }
+    init(statusCode: Int, headers: Any, resource: TResource?, problem: HttpApiResponseProblem?)
+}
+
+extension ResourceResponse {
+    
+    public var isUnauthorized: Bool { return statusCode == 401 }
+
+    public var successful: Bool { return 200...299 ~= statusCode }
 }

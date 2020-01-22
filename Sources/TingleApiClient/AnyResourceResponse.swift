@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiResponseProblem {
+public final class AnyResourceResponse<TResource>: ResourceResponse {
     
     /**
      * The status code of the response
@@ -27,7 +27,7 @@ open class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiRes
     /**
      * The error de-serialized from the response
      */
-    public let problem: TProblem?
+    public let problem: HttpApiResponseProblem?
     
     /**
      * - Parameter statusCode: The status code of the response.
@@ -35,14 +35,10 @@ open class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiRes
      * - Parameter resource: The de-serialized resource
      * - Parameter problem: The error de-serialized from the response
      */
-    public init(statusCode: Int, headers: Any, resource: TResource?, problem: TProblem?) {
+    public init(statusCode: Int, headers: Any, resource: TResource?, problem: HttpApiResponseProblem?) {
         self.statusCode = statusCode
         self.headers = headers
         self.resource = resource
         self.problem = problem
     }
-    
-    public var isUnauthorized: Bool { return statusCode == 401 }
-
-    public var successful: Bool { return 200...299 ~= statusCode }
 }
