@@ -56,6 +56,10 @@ public class TingleApiClient {
         setupJsonSerialization(encoder: encoder, decoder: decoder)
     }
     
+    convenience init(_ authenticationProvider: IAuthenticationProvider) {
+        self.init(session: nil, authenticationProvider: authenticationProvider)
+    }
+    
     open func buildMiddleware() -> [TingleApiClientMiddleware] { [TingleApiClientMiddleware]() }
     
     open func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder) {
