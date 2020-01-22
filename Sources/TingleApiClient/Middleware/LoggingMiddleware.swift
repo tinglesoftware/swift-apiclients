@@ -171,22 +171,24 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
     public enum Level {
         /** No logs. */
         case NONE
+        
         /**
          * Logs request and response lines.
          *
-         * <p>Example:
-         * <pre>{@code
+         * Example:
+         * ```
          * --> POST /greeting http/1.1 (3-byte body)
          *
          * <-- 200 OK (22ms, 6-byte body)
-         * }</pre>
+         * ```
          */
         case BASIC
+        
         /**
          * Logs request and response lines and their respective headers.
          *
-         * <p>Example:
-         * <pre>{@code
+         * Example:
+         * ```
          * --> POST /greeting http/1.1
          * Host: example.com
          * Content-Type: plain/text
@@ -197,14 +199,15 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
          * Content-Type: plain/text
          * Content-Length: 6
          * <-- END HTTP
-         * }</pre>
+         * ```
          */
         case HEADERS
+        
         /**
          * Logs request and response lines and their respective headers and bodies (if present).
          *
-         * <p>Example:
-         * <pre>{@code
+         * Example:
+         * ```
          * --> POST /greeting http/1.1
          * Host: example.com
          * Content-Type: plain/text
@@ -219,7 +222,7 @@ public class LoggingMiddleware: TingleApiClientMiddleware {
          *
          * Hello!
          * <-- END HTTP
-         * }</pre>
+         * ```
          */
         case BODY
     }
