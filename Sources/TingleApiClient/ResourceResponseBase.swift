@@ -1,5 +1,5 @@
 //
-//  CustomResourceResponse.swift
+//  ResourceResponseBase.swift
 //
 //  Created by Maxwell Weru on 1/8/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class CustomResourceResponse<TResource, TProblem> where TProblem : HttpApiResponseProblem {
+public class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiResponseProblem {
     
     /**
      * The status code of the response

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class ResourceResponse<TResource>: CustomResourceResponse<TResource, HttpApiResponseProblem> {
+public class ResourceResponse<TResource>: ResourceResponseBase<TResource, HttpApiResponseProblem> {
     
     /**
      * - Parameter statusCode: The status code of the response.

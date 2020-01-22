@@ -113,11 +113,11 @@ public class TingleApiClient {
     
     /**
      * This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
-     * These two are supplied to the `resultBuilder`  closure to produce a `CustomResourceResponse<TResource, TProblem>`.
+     * These two are supplied to the `resultBuilder`  closure to produce a `ResourceResponseBase<TResource, TProblem>`.
      *
-     * When the network call fails such as there being no internet access or being unable to reach the server, a `CustomResourceResponse<TResource, TProblem>` is not created.
-     * The `completionHandler` closure is called with the `CustomResourceResponse<TResource, TProblem>?` argument set to `nil` and the `Error?` argument not `nil`.
-     * When the network call succeeds, a `CustomResourceResponse<TResource, TProblem>` is created and passed to the
+     * When the network call fails such as there being no internet access or being unable to reach the server, a `ResourceResponseBase<TResource, TProblem>` is not created.
+     * The `completionHandler` closure is called with the `ResourceResponseBase<TResource, TProblem>?` argument set to `nil` and the `Error?` argument not `nil`.
+     * When the network call succeeds, a `ResourceResponseBase<TResource, TProblem>` is created and passed to the
      * `completionHandler` closure but the `Error?` parameter is set to `nil`.
      *
      * - Parameter request: The request to be sent
@@ -125,13 +125,13 @@ public class TingleApiClient {
      */
     @discardableResult
     func send<TResource, TProblem>(_ request: inout URLRequest,
-                                   _ completionHandler: @escaping (CustomResourceResponse<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+                                   _ completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
             // make the result builder
-            let builder: (Int, Any, TResource?, TProblem?) -> CustomResourceResponse<TResource, TProblem> = {
-                (sc: Int, headers: Any, resource:TResource?, problem: TProblem?) -> CustomResourceResponse<TResource, TProblem> in
-                return CustomResourceResponse(statusCode: sc, headers: headers, resource: resource, problem: problem)
+            let builder: (Int, Any, TResource?, TProblem?) -> ResourceResponseBase<TResource, TProblem> = {
+                (sc: Int, headers: Any, resource:TResource?, problem: TProblem?) -> ResourceResponseBase<TResource, TProblem> in
+                return ResourceResponseBase(statusCode: sc, headers: headers, resource: resource, problem: problem)
             }
             
             // send the request
@@ -155,7 +155,7 @@ public class TingleApiClient {
     func send<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
                                                       _ resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
                                                       _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
-        where TResource: Decodable, TProblem: Decodable, TResourceResponse: CustomResourceResponse<TResource, TProblem> {
+        where TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem> {
             
             // first execute all middleware in sequence
             var outgoingRequest = request

@@ -191,10 +191,10 @@ When the network call succeeds, the `resultBuilder` closure is called to produce
 
 ```swift
 func send<TResource, TProblem>(_ request: inout URLRequest,
-                               _ completionHandler: @escaping (CustomResourceResponse<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+                               _ completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
 ```
 
-This is similar to calling the `send` method above but instead produces a `CustomResourceResponse<TResource, TProblem>`  for the `TResourceResponse`
+This is similar to calling the `send` method above but instead produces a `ResourceResponseBase<TResource, TProblem>`  for the `TResourceResponse`
 
 
 ```swift
