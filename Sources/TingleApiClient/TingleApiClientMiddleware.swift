@@ -11,15 +11,17 @@ import Foundation
 public protocol TingleApiClientMiddleware {
     /**
      * Process a request before sending
-     * - Parameter request the request that needs to be processed before sending
+     *
+     * - Parameter request: The request that needs to be processed before sending
      */
     func process(request: inout URLRequest) -> URLRequest
 
     /**
      * Process a response received
-     * - Parameter response the response that needs to be processed
-     * - Parameter data the data in the response
-     * - Parameter error an error processing the request
+     *
+     * - Parameter response: The response that needs to be processed
+     * - Parameter data: The data in the response
+     * - Parameter error: An error processing the request
      */
     func process(response: URLResponse?, data: Data?, error: Error?)
 }
