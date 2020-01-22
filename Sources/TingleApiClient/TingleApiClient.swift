@@ -98,7 +98,7 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    func send<TResource>(_ request: inout URLRequest, _ completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
+    public func send<TResource>(_ request: inout URLRequest, _ completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
             // make the result builder
@@ -124,7 +124,7 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    func send<TResource, TProblem>(_ request: inout URLRequest,
+    public func send<TResource, TProblem>(_ request: inout URLRequest,
                                    _ completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
@@ -152,7 +152,7 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    func send<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
+    public func send<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
                                                       _ resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
                                                       _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem> {
