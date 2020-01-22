@@ -48,7 +48,7 @@ open class TingleApiClient {
      * - Parameter authenticationProvider: The instance of `IAuthenticationProvider` to use to authenticate outgoing requests.
      * When not provided or set to `nil`, the client uses and instance of `EmptyAuthenticationProvider`
      * */
-    init(session: URLSession? = nil, authenticationProvider: IAuthenticationProvider? = nil)
+    public init(session: URLSession? = nil, authenticationProvider: IAuthenticationProvider? = nil)
     {
         // set the URLSession and default to the shared one when set to nil
         self.session = session ?? URLSession.shared
@@ -70,7 +70,7 @@ open class TingleApiClient {
      * Initializes an instance of `TingleApiClient`
      * - Parameter authenticationProvider: The instance of `IAuthenticationProvider` to use to authenticate outgoing requests.
      */
-    convenience init(_ authenticationProvider: IAuthenticationProvider) {
+    public convenience init(_ authenticationProvider: IAuthenticationProvider) {
         self.init(session: nil, authenticationProvider: authenticationProvider)
     }
     

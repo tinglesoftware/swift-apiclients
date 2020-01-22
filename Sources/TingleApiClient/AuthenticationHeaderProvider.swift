@@ -23,7 +23,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
      * Initializes an instance of `AuthenticationHeaderProvider`
      * - Parameter scheme: The scheme to set in the `Authorization` header
      */
-    init(_ scheme: String = DEFAULT_SCHEME) {
+    public init(_ scheme: String = DEFAULT_SCHEME) {
         self.scheme = scheme
     }
     

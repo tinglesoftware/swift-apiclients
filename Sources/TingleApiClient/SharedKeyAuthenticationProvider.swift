@@ -28,7 +28,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * - Parameter dateHeaderName: The name to use when setting the date header
      * - Parameter keyData: The bytes for the key used for signing
      */
-    init (_ scheme: String, _ dateHeaderName: String, keyData: Data) {
+    public init (_ scheme: String, _ dateHeaderName: String, keyData: Data) {
         self.dateHeaderName = dateHeaderName
         self.keyData = keyData
         super.init(scheme)
@@ -40,7 +40,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * - Parameter dateHeaderName: The name to use when setting the date header
      * - Parameter base64Key: The string key for signing encoded in base64
      */
-    convenience init (_ scheme: String, _ dateHeaderName: String, base64Key: String) {
+    public convenience init (_ scheme: String, _ dateHeaderName: String, base64Key: String) {
         self.init(scheme, dateHeaderName, keyData: Data(base64Encoded: base64Key)!)
     }
     
@@ -49,7 +49,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * - Parameter scheme: The scheme to set in the `Authorization` header
      * - Parameter keyData: The bytes for the key used for signing
      */
-    convenience init (_ dateHeaderName: String, keyData: Data) {
+    public convenience init (_ dateHeaderName: String, keyData: Data) {
         self.init(SharedKeyAuthenticationProvider.DEFAULT_SCHEME, dateHeaderName, keyData: keyData)
     }
 
@@ -58,7 +58,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * - Parameter dateHeaderName: The name to use when setting the date header
      * - Parameter base64Key: The string key for signing encoded in base64
 */
-    convenience init (_ dateHeaderName: String, base64Key: String) {
+    public convenience init (_ dateHeaderName: String, base64Key: String) {
         self.init(SharedKeyAuthenticationProvider.DEFAULT_SCHEME, dateHeaderName, base64Key: base64Key)
     }
 
@@ -66,7 +66,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * Initializes an instance of `SharedKeyAuthenticationProvider`
      * - Parameter keyData: The bytes for the key used for signing
      */
-    convenience init (_ keyData: Data) {
+    public convenience init (_ keyData: Data) {
         self.init(SharedKeyAuthenticationProvider.DEFAULT_DATE_HEADER_NAME, keyData: keyData)
     }
 
@@ -74,7 +74,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * Initializes an instance of `SharedKeyAuthenticationProvider`
      * - Parameter base64Key: The string key for signing encoded in base64
      */
-    convenience init (base64Key: String) {
+    public convenience init (base64Key: String) {
         self.init(SharedKeyAuthenticationProvider.DEFAULT_DATE_HEADER_NAME, base64Key: base64Key)
     }
 
