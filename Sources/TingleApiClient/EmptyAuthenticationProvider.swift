@@ -14,11 +14,24 @@ import Foundation
  * of a response message `ResourceResponse`
 */
 public class EmptyAuthenticationProvider: IAuthenticationProvider {
+
+    /**
+     * Process a request before sending
+     *
+     * - Parameter request: The request that needs to be processed before sending
+     */
     public func process(request: inout URLRequest) -> URLRequest {
         // nothing to do here
         return request
     }
     
+    /**
+     * Process a response received
+     *
+     * - Parameter response: The response that needs to be processed
+     * - Parameter data: The data in the response
+     * - Parameter error: An error processing the request
+     */
     public func process(response: URLResponse?, data: Data?, error: Error?) {
         
     }

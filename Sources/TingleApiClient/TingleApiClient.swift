@@ -38,6 +38,13 @@ public class TingleApiClient {
      */
     private var middlewareItems = [TingleApiClientMiddleware]()
     
+    /**
+     * Initializes an instance of `TingleApiClient`
+     *
+     * - Parameter session: The instance of `URLSession` to use when queuing requests. When not provided or set to `nil`, the client uses `URLSession.shared`
+     * - Parameter authenticationProvider: The instance of `IAuthenticationProvider` to use to authenticate outgoing requests.
+     * When not provided or set to `nil`, the client uses and instance of `EmptyAuthenticationProvider`
+     * */
     init(session: URLSession? = nil, authenticationProvider: IAuthenticationProvider? = nil)
     {
         // set the URLSession and default to the shared one when set to nil
@@ -56,13 +63,40 @@ public class TingleApiClient {
         setupJsonSerialization(encoder: encoder, decoder: decoder)
     }
     
+    /**
+     * Initializes an instance of `TingleApiClient`
+     * - Parameter authenticationProvider: The instance of `IAuthenticationProvider` to use to authenticate outgoing requests.
+     */
+    convenience init(_ authenticationProvider: IAuthenticationProvider) {
+        self.init(session: nil, authenticationProvider: authenticationProvider)
+    }
+    
+    /**
+     * Builds the middleware that is used to process requests and responses. There are different reasons why you might want to use middleware, such as logging, setting extra headers etc.
+     * The `IAuthenticationProvider` is itself middleware dedicated towards authenticating the request before going out.
+     */
     open func buildMiddleware() -> [TingleApiClientMiddleware] { [TingleApiClientMiddleware]() }
     
+    /**
+     * Setups the instances of  `JSONEncoder` and `JSONDecoder` already created. These instances are used to encode/decode requests/responses respectively in the `send` functions
+     */
     open func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder) {
         // nothing to do here, the implementing class shall override to specify the settings for the encoder and decoder
         // example for these settings are the date format, the key strategy etc.
     }
     
+    /**
+     * This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
+     * These two are supplied to the `resultBuilder`  closure to produce a `ResourceResponse<TResource, TProblem>`.
+     *
+     * When the network call fails such as there being no internet access or being unable to reach the server, a `ResourceResponse<TResource, TProblem>` is not created.
+     * The `completionHandler` closure is called with the `ResourceResponse<TResource, TProblem>?` argument set to `nil` and the `Error?` argument not `nil`.
+     * When the network call succeeds, a `ResourceResponse<TResource, TProblem>` is created and passed to the
+     * `completionHandler` closure but the `Error?` parameter is set to `nil`.
+     *
+     * - Parameter request: The request to be sent
+     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
+     */
     @discardableResult
     func send<TResource>(_ request: inout URLRequest, _ completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
@@ -77,26 +111,51 @@ public class TingleApiClient {
             return send(&request, builder, completionHandler)
     }
     
+    /**
+     * This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
+     * These two are supplied to the `resultBuilder`  closure to produce a `ResourceResponseBase<TResource, TProblem>`.
+     *
+     * When the network call fails such as there being no internet access or being unable to reach the server, a `ResourceResponseBase<TResource, TProblem>` is not created.
+     * The `completionHandler` closure is called with the `ResourceResponseBase<TResource, TProblem>?` argument set to `nil` and the `Error?` argument not `nil`.
+     * When the network call succeeds, a `ResourceResponseBase<TResource, TProblem>` is created and passed to the
+     * `completionHandler` closure but the `Error?` parameter is set to `nil`.
+     *
+     * - Parameter request: The request to be sent
+     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
+     */
     @discardableResult
     func send<TResource, TProblem>(_ request: inout URLRequest,
-                                   _ completionHandler: @escaping (CustomResourceResponse<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+                                   _ completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
         where TResource: Decodable {
             
             // make the result builder
-            let builder: (Int, Any, TResource?, TProblem?) -> CustomResourceResponse<TResource, TProblem> = {
-                (sc: Int, headers: Any, resource:TResource?, problem: TProblem?) -> CustomResourceResponse<TResource, TProblem> in
-                return CustomResourceResponse(statusCode: sc, headers: headers, resource: resource, problem: problem)
+            let builder: (Int, Any, TResource?, TProblem?) -> ResourceResponseBase<TResource, TProblem> = {
+                (sc: Int, headers: Any, resource:TResource?, problem: TProblem?) -> ResourceResponseBase<TResource, TProblem> in
+                return ResourceResponseBase(statusCode: sc, headers: headers, resource: resource, problem: problem)
             }
             
             // send the request
             return send(&request, builder, completionHandler)
     }
     
+    /**
+     * This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `TProblem`.
+     * These two are supplied to the `resultBuilder`  closure to produce a `TResourceResponse`.
+     *
+     * When the network call fails such as there being no internet access or being unable to reach the server, the `resultBuilder` closure is not called.
+     * Instead, the `completionHandler` closure is called with the `TResourceResponse?` argument set to `nil` and the `Error?` argument not `nil`.
+     * When the network call succeeds, the `resultBuilder` closure is called to produce an instance of `TResourceResponse` and the result is passed to the
+     * `completionHandler` closure but the `Error?` parameter is set to `nil`.
+     *
+     * - Parameter request: The request to be sent
+     * - Parameter resultBuilder: The closure to call when the network call succeeds whether or not the HTTP response indicares success
+     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
+     */
     @discardableResult
     func send<TResource, TProblem, TResourceResponse>(_ request: inout URLRequest,
                                                       _ resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
                                                       _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
-        where TResource: Decodable, TProblem: Decodable, TResourceResponse: CustomResourceResponse<TResource, TProblem> {
+        where TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem> {
             
             // first execute all middleware in sequence
             var outgoingRequest = request
