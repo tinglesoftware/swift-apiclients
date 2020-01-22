@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiResponseProblem {
+open class ResourceResponseBase<TResource, TProblem> where TProblem : HttpApiResponseProblem {
     
     /**
      * The status code of the response
