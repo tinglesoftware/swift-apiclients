@@ -10,7 +10,7 @@ import Foundation
 /**
  * An `TingleApiClientMiddleware` that adds headers for package id, version name and version code to a request before sending
 */
-public class AppDetailsMiddleware: TingleApiClientMiddleware {
+public final class AppDetailsMiddleware: TingleApiClientMiddleware {
     private let bundleId: String
     private let shortBundleVersion: String
     private let bundleVersion: String
