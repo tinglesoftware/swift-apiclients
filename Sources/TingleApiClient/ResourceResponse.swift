@@ -41,7 +41,7 @@ public protocol ResourceResponse {
 
 extension ResourceResponse {
     
-    public var isUnauthorized: Bool { statusCode == 401 }
+    public var unauthorized: Bool { statusCode == 401 }
 
     public var successful: Bool { 200...299 ~= statusCode }
 }
