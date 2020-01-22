@@ -98,8 +98,9 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    public func sendRequest<TResource>(request: inout URLRequest, completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
-        where TResource: Decodable {
+    public func sendRequest<TResource: Decodable>(request: inout URLRequest,
+                                                  completionHandler: @escaping (ResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
+    {
             
             // make the result builder
             let builder: (Int, Any, TResource?, HttpApiResponseProblem?) -> ResourceResponse<TResource> = {
@@ -124,8 +125,9 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    public func sendRequest<TResource, TProblem>(request: inout URLRequest, completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
-        where TResource: Decodable {
+    public func sendRequest<TResource: Decodable, TProblem: Decodable>(request: inout URLRequest,
+                                                                       completionHandler: @escaping (ResourceResponseBase<TResource, TProblem>?, Error?) -> Void) -> URLSessionTask
+    {
             
             // make the result builder
             let builder: (Int, Any, TResource?, TProblem?) -> ResourceResponseBase<TResource, TProblem> = {
@@ -151,58 +153,59 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    public func sendRequest<TResource, TProblem, TResourceResponse>(request: inout URLRequest,
-                                                                    resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
-                                                                    completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
-        where TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem> {
+    public func sendRequest<TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem>>(
+        request: inout URLRequest,
+        resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
+        completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
+    {
+        
+        // first execute all middleware in sequence
+        var outgoingRequest = request
+        for m in middlewareItems {
+            outgoingRequest = m.process(request: &outgoingRequest)
+        }
+        
+        // now send the request over the wire
+        let task = session.dataTask(with: outgoingRequest) { (data, response, error) in
             
-            // first execute all middleware in sequence
-            var outgoingRequest = request
-            for m in middlewareItems {
-                outgoingRequest = m.process(request: &outgoingRequest)
+            // pass the response thourhg the middleware in reverse order
+            self.middlewareItems.reversed().forEach { (m: TingleApiClientMiddleware) in
+                m.process(response: response, data: data, error: error)
             }
             
-            // now send the request over the wire
-            let task = session.dataTask(with: outgoingRequest) { (data, response, error) in
+            // prepare the variables for resource and problem
+            var resource: TResource? = nil
+            var problem: TProblem? = nil
+            var result: TResourceResponse? = nil
+            
+            // cast response to the HTTP version
+            if let response = response as? HTTPURLResponse {
                 
-                // pass the response thourhg the middleware in reverse order
-                self.middlewareItems.reversed().forEach { (m: TingleApiClientMiddleware) in
-                    m.process(response: response, data: data, error: error)
-                }
+                // get the status code
+                let statusCode = response.statusCode
                 
-                // prepare the variables for resource and problem
-                var resource: TResource? = nil
-                var problem: TProblem? = nil
-                var result: TResourceResponse? = nil
-                
-                // cast response to the HTTP version
-                if let response = response as? HTTPURLResponse {
-                    
-                    // get the status code
-                    let statusCode = response.statusCode
-                    
-                    // if the response was successful, decode the resource, else the problem
-                    if (data != nil && data!.count > 0) {
-                        if (200..<300 ~= statusCode) {
-                            resource = try! self.decoder.decode(TResource.self, from: data!)
-                        } else {
-                            problem = try! self.decoder.decode(TProblem.self, from: data!)
-                        }
+                // if the response was successful, decode the resource, else the problem
+                if (data != nil && data!.count > 0) {
+                    if (200..<300 ~= statusCode) {
+                        resource = try! self.decoder.decode(TResource.self, from: data!)
+                    } else {
+                        problem = try! self.decoder.decode(TProblem.self, from: data!)
                     }
-                    
-                    // get the headers
-                    let headers = response.allHeaderFields
-                    
-                    // generate the result
-                    result = resultBuilder(statusCode, headers, resource, problem)
                 }
                 
-                // invoke the completion handler
-                completionHandler(result, error)
+                // get the headers
+                let headers = response.allHeaderFields
+                
+                // generate the result
+                result = resultBuilder(statusCode, headers, resource, problem)
             }
             
-            task.resume()
-            
-            return task
+            // invoke the completion handler
+            completionHandler(result, error)
+        }
+        
+        task.resume()
+        
+        return task
     }
 }
