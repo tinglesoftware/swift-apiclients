@@ -8,7 +8,7 @@
 import Foundation
 
 /**
- *An `TingleApiClientMiddleware` that adds headers for package id, version name and version code to a request before sending
+ * An `TingleApiClientMiddleware` that adds headers for package id, version name and version code to a request before sending
 */
 public class AppDetailsMiddleware: TingleApiClientMiddleware {
     private let packageId: String
