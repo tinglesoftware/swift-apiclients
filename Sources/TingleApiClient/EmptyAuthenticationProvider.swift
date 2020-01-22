@@ -13,7 +13,7 @@ import Foundation
  * This can also be used to find out the supported authentication methods as is presented in the 'WWW-Authentication' header
  * of a response message `ResourceResponse`
 */
-public class EmptyAuthenticationProvider: IAuthenticationProvider {
+public final class EmptyAuthenticationProvider: IAuthenticationProvider {
 
     /**
      * Process a request before sending
