@@ -15,7 +15,7 @@ import CryptoSwift
  * The implementation generates a token based on the HTTP method, path, time, content length and
  * content type, then hashing using the pre-shared key (PSK). The hashing algorithm is HMACSHA256.
  */
-public class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider {
+public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider {
     private static let DEFAULT_DATE_HEADER_NAME = "x-ms-date"
     private static let DEFAULT_SCHEME = "SharedKey"
 
