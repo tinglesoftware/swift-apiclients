@@ -153,7 +153,7 @@ open class TingleApiClient {
      * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
      */
     @discardableResult
-    public func sendRequest<TResource: Decodable, TProblem: Decodable, TResourceResponse: ResourceResponseBase<TResource, TProblem>>(
+    public func sendRequest<TResource: Decodable, TProblem: Decodable, TResourceResponse>(
         request: inout URLRequest,
         resultBuilder: @escaping (Int, Any, TResource?, TProblem?) -> TResourceResponse,
         completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
