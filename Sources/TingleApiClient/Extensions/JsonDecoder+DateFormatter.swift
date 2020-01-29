@@ -6,7 +6,7 @@
 //
 
 import Foundation
-extension JSONDecoder {
+public extension JSONDecoder {
     
     /// Assign multiple DateFormatter to dateDecodingStrategy
     ///
@@ -18,7 +18,7 @@ extension JSONDecoder {
     ///
     /// Throws a 'DecodingError.dataCorruptedError' if an unsupported date format is found while parsing the document
     
-    var dateDecodingStrategyFormatters: [DateFormatter]?  {
+   public var dateDecodingStrategyFormatters: [DateFormatter]?  {
         @available(*, unavailable, message: "This variable is meant to be set only")
         get { return nil }
         set{
@@ -42,7 +42,7 @@ extension JSONDecoder {
 }
 
 
-extension DateFormatter {
+public extension DateFormatter {
     static var iSO8601DateWithMillisec: DateFormatter {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
