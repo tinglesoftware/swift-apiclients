@@ -8,6 +8,8 @@
 import Foundation
 
 public class JsonPatchDocument {
+    public init() {}
+
     private var operations = [JsonPatchOperation]()
     
     
