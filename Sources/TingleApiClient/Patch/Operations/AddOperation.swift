@@ -1,7 +1,7 @@
 import Foundation
 
 
-class AddOperation : JsonPatchOperation{
+public class AddOperation : JsonPatchOperation{
     var path: String
     var value: Any?
     

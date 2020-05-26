@@ -8,7 +8,7 @@
 import Foundation
 
 
-class TestOperation: JsonPatchOperation{
+public class TestOperation: JsonPatchOperation{
     var path: String
     var value: Any?
     
