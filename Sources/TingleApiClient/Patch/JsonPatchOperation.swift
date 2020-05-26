@@ -2,7 +2,7 @@
 import Foundation
 
 public class JsonPatchOperation: Encodable{
-    var op: String
+    public var op: String
     
     init(op: String) {
         self.op = op
