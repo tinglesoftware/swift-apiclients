@@ -20,7 +20,7 @@ public class JsonPatchDocument {
      * - Parameter path  target location
      * - Parameter value value to be added
      */
-    public   func add(path: String, value: Any?) -> JsonPatchDocument{
+    public func add<TValue: Encodable>(path: String, value: TValue?) -> JsonPatchDocument{
         operations.append(AddOperation(path: path, value: value))
         return self
     }
@@ -32,7 +32,7 @@ public class JsonPatchDocument {
      *
      * - Parameter path target location
      */
-    public    func remove(path: String) -> JsonPatchDocument{
+    public func remove(path: String) -> JsonPatchDocument{
         operations.append(RemoveOperation(path: path))
         return self
     }
@@ -45,7 +45,7 @@ public class JsonPatchDocument {
      * - Parameter path  target location
      * - Parameter value value to be replaced
      */
-    public   func replace(path: String, value: Any?) -> JsonPatchDocument {
+    public func replace<TValue: Encodable>(path: String, value: TValue?) -> JsonPatchDocument {
         operations.append(ReplaceOperation(path: path, value: value))
         return self
     }
@@ -57,7 +57,7 @@ public class JsonPatchDocument {
      * - Parameter path  target location
      * - Parameter value test value
      */
-    public   func test(path: String, value: Any) -> JsonPatchDocument {
+    public func test<TValue: Encodable>(path: String, value: TValue) -> JsonPatchDocument {
         operations.append(TestOperation(path: path, value: value))
         return self
     }
@@ -70,7 +70,7 @@ public class JsonPatchDocument {
      * - Parameter from source location
      * - Parameter path target location
      */
-    public  func move(from: String, path: String) -> JsonPatchDocument {
+    public func move(from: String, path: String) -> JsonPatchDocument {
         operations.append(MoveOperation(path: from, value: path))
         return self
     }
@@ -82,7 +82,7 @@ public class JsonPatchDocument {
      * - Parameter from source location
      * - Parameter path target location
      */
-    public  func copy(from: String, path: String) -> JsonPatchDocument {
+    public func copy(from: String, path: String) -> JsonPatchDocument {
         operations.append(CopyOperation(path: from, value: path))
         return self
     }
