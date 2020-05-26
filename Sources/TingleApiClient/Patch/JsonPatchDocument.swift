@@ -7,7 +7,7 @@
 
 import Foundation
 
-class JsonPatchDocument {
+public class JsonPatchDocument {
     private var operations = [JsonPatchOperation]()
     
     

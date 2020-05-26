@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ReplaceOperation: JsonPatchOperation{
+public class ReplaceOperation: JsonPatchOperation{
     var path: String
     var value: Any?
     
