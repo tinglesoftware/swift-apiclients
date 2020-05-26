@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CopyOperation: JsonPatchOperation{
+public class CopyOperation: JsonPatchOperation{
     var path: String
     var value: Any?
     

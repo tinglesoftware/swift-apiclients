@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RemoveOperation: JsonPatchOperation{
+public class RemoveOperation: JsonPatchOperation{
     var path: String
     
     init(path: String){
