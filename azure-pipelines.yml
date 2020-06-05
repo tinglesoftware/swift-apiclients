@@ -1,0 +1,21 @@
+# Build and test swift packages with GitVersion
+
+trigger:
+- master
+
+pool:
+  vmImage: 'macos-latest'
+
+steps:
+- task: GitVersion@5
+  displayName: 'GitVersion'
+
+- script: swift package resolve
+  displayName: 'swift package resolve'
+
+- script: swift build --build-tests
+  failOnStderr: true
+  displayName: 'swift build --build-tests'
+
+- script: swift test
+  displayName: 'swift test'
