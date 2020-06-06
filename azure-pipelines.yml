@@ -1,7 +1,10 @@
 # Build and test swift packages with GitVersion
 
 trigger:
-- master
+  batch: true
+  branches:
+    include:
+      - master
 
 pool:
   vmImage: 'macos-latest'
