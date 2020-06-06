@@ -1,6 +1,7 @@
 //
 //  ResourceResponse.swift
 //
+//
 //  Created by Maxwell Weru on 1/8/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //

@@ -3,6 +3,7 @@
 //  
 //
 //  Created by Seth Onyango on 24/05/2020.
+//  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import Foundation
@@ -20,7 +21,7 @@ public class JsonPatchDocument {
      * - Parameter path  target location
      * - Parameter value value to be added
      */
-    public func add<TValue: Encodable>(path: String, value: TValue?) -> JsonPatchDocument{
+    public func add<TValue: Encodable>(path: String, value: TValue?) -> JsonPatchDocument {
         operations.append(AddOperation(path: path, value: value))
         return self
     }
@@ -32,7 +33,7 @@ public class JsonPatchDocument {
      *
      * - Parameter path target location
      */
-    public func remove(path: String) -> JsonPatchDocument{
+    public func remove(path: String) -> JsonPatchDocument {
         operations.append(RemoveOperation(path: path))
         return self
     }

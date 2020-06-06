@@ -3,12 +3,13 @@
 //  
 //
 //  Created by Seth Onyango on 25/05/2020.
+//  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import Foundation
 
 
-public class MoveOperation: JsonPatchOperation{
+public class MoveOperation: JsonPatchOperation {
     var path: String
     var value: String
     

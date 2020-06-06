@@ -3,6 +3,7 @@
 //  TingleApiClientTests
 //
 //  Created by Seth Onyango on 26/05/2020.
+//  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import XCTest

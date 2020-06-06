@@ -3,12 +3,13 @@
 //  
 //
 //  Created by Seth Onyango on 25/05/2020.
+//  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import Foundation
 
 
-public class TestOperation<TValue: Encodable>: JsonPatchOperation{
+public class TestOperation<TValue: Encodable>: JsonPatchOperation {
     public var path: String
     public var value: TValue?
     
