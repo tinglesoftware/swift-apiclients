@@ -1,5 +1,5 @@
 //
-//  JsonPatchDocumetTest.swift
+//  JsonPatchDocumentTest.swift
 //  
 //
 //  Created by Seth Onyango on 26/05/2020.
@@ -9,7 +9,7 @@ import XCTest
 @testable import TingleApiClient
 
 
-class JsonPatchDocumentTest: XCTestCase{
+class JsonPatchDocumentTest: XCTestCase {
     
     func testSerializationProducedExpectedJson() {
         let document = JsonPatchDocument()
