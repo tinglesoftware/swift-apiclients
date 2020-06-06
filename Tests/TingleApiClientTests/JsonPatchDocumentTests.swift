@@ -1,15 +1,16 @@
 //
-//  JsonPatchDocumetTest.swift
-//  
+//  JsonPatchDocumentTests.swift
+//  TingleApiClientTests
 //
 //  Created by Seth Onyango on 26/05/2020.
+//  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
 //
 
 import XCTest
 @testable import TingleApiClient
 
 
-class JsonPatchDocumentTest: XCTestCase{
+class JsonPatchDocumentTest: XCTestCase {
     
     func testSerializationProducedExpectedJson() {
         let document = JsonPatchDocument()
