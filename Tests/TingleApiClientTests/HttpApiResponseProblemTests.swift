@@ -1,5 +1,5 @@
 //
-//  HttpApiResponseProblemTest.swift
+//  HttpApiResponseProblemTests.swift
 //  TingleApiClientTests
 //
 //  Created by Maxwell Weru on 1/8/20.

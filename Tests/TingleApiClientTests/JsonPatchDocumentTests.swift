@@ -1,5 +1,5 @@
 //
-//  JsonPatchDocumentTest.swift
+//  JsonPatchDocumentTests.swift
 //  
 //
 //  Created by Seth Onyango on 26/05/2020.
