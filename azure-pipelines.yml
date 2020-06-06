@@ -11,6 +11,7 @@ steps:
   displayName: 'GitVersion'
 
 - script: swift package resolve
+  failOnStderr: true
   displayName: 'swift package resolve'
 
 - script: swift build --build-tests
@@ -18,4 +19,5 @@ steps:
   displayName: 'swift build --build-tests'
 
 - script: swift test
+  failOnStderr: true
   displayName: 'swift test'
