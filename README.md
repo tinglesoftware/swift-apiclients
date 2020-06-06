@@ -1,7 +1,7 @@
 # TingleApiClient
 
 
-[![Build Status](https://dev.azure.com/tingle/COMMON/_apis/build/status/Swift%20-%20ApiClients?branchName=master)](https://dev.azure.com/tingle/COMMON/_build/latest?definitionId=239&branchName=master)
+[![Build Status](https://dev.azure.com/tingle/Core/_apis/build/status/Swift%20-%20ApiClients?branchName=master)](https://dev.azure.com/tingle/Core/_build/latest?definitionId=274&branchName=master)
 ![Language](https://img.shields.io/badge/language-Swift%205.0-orange.svg)
 
 TingleApiClient is a simple class for making api calls in iOS, macOS and tvOS apps. It has specific support for parsing errors and content.
