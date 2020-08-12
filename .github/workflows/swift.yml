@@ -4,8 +4,18 @@ on:
   push:
     tags:
       - '*'
+    paths-ignore: # do not trigger for changes in docs
+      - docs/**
+      - README.md
+      - CHANGELOG.md
+      - LICENSE.md
   pull_request:
     branches: [ master ]
+    paths-ignore: # do not trigger for changes in docs
+      - docs/**
+      - README.md
+      - CHANGELOG.md
+      - LICENSE.md
 
 jobs:
   build:
