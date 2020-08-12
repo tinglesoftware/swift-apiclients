@@ -14,12 +14,12 @@ This library eases working with HTTP APIs built by Tingle Software but can also 
 let apiClient = TingleApiClient()
 
 // prepare request
-let url = URL(string: "https://citam.azurewebsites.net/api/v2/assemblies")!
+let url = URL(string: "https://api.example.com/v2/profiles")!
 var request = URLRequest(url: url)
 request.httpMethod = "GET"
 
 // make request
-apiClient.send(&request) { (response: ResourceResponse<[Assembly]>?, error: Error?) in
+apiClient.send(&request) { (response: ResourceResponse<[Profile]>?, error: Error?) in
 
     // first check for a network error (such as no internet)
     if (error != nil) {
@@ -36,8 +36,8 @@ apiClient.send(&request) { (response: ResourceResponse<[Assembly]>?, error: Erro
     
     // check if the response was successful
     if (response!.successful && response!.resource != nil) {
-        let assemblies = response!.resource!
-        if (!assemblies.isEmpty) {
+        let profiles = response!.resource!
+        if (!profiles.isEmpty) {
             // save the entries in the database or elsewhere
             // this is called in the background you should not access the UI thread directly without a dispatcher
         }
@@ -51,8 +51,8 @@ apiClient.send(&request) { (response: ResourceResponse<[Assembly]>?, error: Erro
 import Foundation
 import TingleApiClient
 
-public class CitamApiClient: TingleApiClient {
-    private let baseUrl = "https://citam.azurewebsites.net"
+public class ProfilesApiClient: TingleApiClient {
+    private let baseUrl = "https://api.example.com"
     
     override public func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder) {
         encoder.dateEncodingStrategy = .iso8601
@@ -67,24 +67,8 @@ public class CitamApiClient: TingleApiClient {
     }
     
     @discardableResult
-    public func getAssemblies(_ completionHandler: @escaping (ResourceResponse<[Assembly]>?, error: Error?) -> Void) -> URLSessionTask {
-        let url = URL(string: "\(baseUrl)/api/v2/assemblies")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        return send(&request, completionHandler)
-    }
-    
-    @discardableResult
-    public func getSermons(_ assemblyCode: String, _ completionHandler: @escaping (ResourceResponse<[Sermon]>?, error: Error?) -> Void) -> URLSessionTask {
-        let url = URL(string: "\(baseUrl)/api/v2/assemblies/\(assemblyCode)/sermons")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        return send(&request, completionHandler)
-    }
-    
-    @discardableResult
-    public func getNotices(_ assemblyCode: String, _ completionHandler: @escaping (ResourceResponse<[Notice]>?, error: Error?) -> Void) -> URLSessionTask {
-        let url = URL(string: "\(baseUrl)/api/v2/assemblies/\(assemblyCode)/notices")!
+    public func getProfiles(_ completionHandler: @escaping (ResourceResponse<[Profile]>?, error: Error?) -> Void) -> URLSessionTask {
+        let url = URL(string: "\(baseUrl)/v2/profiles")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         return send(&request, completionHandler)
@@ -98,17 +82,17 @@ import RealmSwift
 import TingleApiClient
 
 public class DownloadManager {
-    private static let client = CitamApiClient()
+    private static let client = ProfilesApiClient()
     
     @discardableResult
     public static func downloadAllAssemblies() -> URLSessionTask {
-        return client.getAssemblies { (response: ResourceResponse<[Assembly]>) in
+        return client.getProfiles { (response: ResourceResponse<[Profile]>) in
             if (response.successful && response.resource != nil) {
-                let assemblies = response.resource!
-                if (!assemblies.isEmpty) {
+                let profiles = response.resource!
+                if (!profiles.isEmpty) {
                     if let realm = try? Realm() {
                         try? realm.write {
-                            realm.add(assemblies, update: .all)
+                            realm.add(profiles, update: .all)
                         }
                     }
                 }
@@ -131,7 +115,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .package(url: "https://dev.azure.com/tingle/COMMON/_git/swift-apiclients", from: 0.2.0)
+        .package(url: "https://github.com/tinglesoftware/swift-apiclients", from: 0.2.0)
     ]
 )
 ```
