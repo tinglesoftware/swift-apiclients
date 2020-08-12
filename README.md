@@ -1,7 +1,7 @@
 # TingleApiClient
 
 
-[![Build Status](https://dev.azure.com/tingle/Core/_apis/build/status/Swift%20-%20ApiClients?branchName=master)](https://dev.azure.com/tingle/Core/_build/latest?definitionId=274&branchName=master)
+![Swift](https://github.com/tinglesoftware/swift-apiclients/workflows/Swift/badge.svg)
 ![Language](https://img.shields.io/badge/language-Swift%205.0-orange.svg)
 
 TingleApiClient is a simple class for making api calls in iOS, macOS and tvOS apps. It has specific support for parsing errors and content.
@@ -85,7 +85,7 @@ public class DownloadManager {
     private static let client = ProfilesApiClient()
     
     @discardableResult
-    public static func downloadAllAssemblies() -> URLSessionTask {
+    public static func downloadProfiles() -> URLSessionTask {
         return client.getProfiles { (response: ResourceResponse<[Profile]>) in
             if (response.successful && response.resource != nil) {
                 let profiles = response.resource!
@@ -115,7 +115,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .package(url: "https://github.com/tinglesoftware/swift-apiclients", from: 0.2.0)
+        .package(url: "https://github.com/tinglesoftware/swift-apiclients.git", from: 0.2.0)
     ]
 )
 ```
