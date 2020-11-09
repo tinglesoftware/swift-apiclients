@@ -164,8 +164,9 @@ open class TingleApiClient {
                     switch statusCode {
                     case 200..<300:
                         resource = try! self.decoder.decode(TResource.self, from: data!)
-                    case 400..<500:
+                    case 400:
                         problem = try! self.decoder.decode(HttpApiResponseProblem.self, from: data!)
+
                     default:
                         print("Response Status Code \(statusCode)")
                     }
