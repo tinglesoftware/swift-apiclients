@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Logging
 
 /**
  * Middleware for performing authentication
@@ -161,10 +162,15 @@ open class TingleApiClient {
                 
                 // if the response was successful, decode the resource, else the problem
                 if (data != nil && data!.count > 0) {
-                    if (200..<300 ~= statusCode) {
+                    switch statusCode {
+                    case 200..<300:
                         resource = try! self.decoder.decode(TResource.self, from: data!)
-                    } else {
+                    case 400:
                         problem = try! self.decoder.decode(HttpApiResponseProblem.self, from: data!)
+
+                    default:
+                        let logger = Logger(label: String(describing: TingleApiClient.self))
+                        logger.error("Unhandled response with status code \(statusCode)")
                     }
                 }
                 
