@@ -170,8 +170,7 @@ open class TingleApiClient {
 
                     default:
                         let logger = Logger(label: String(describing: TingleApiClient.self))
-                        logger.error("")
-                        print("Response Status Code \(statusCode)")
+                        logger.error("Unhandled response with status code \(statusCode)")
                     }
                 }
                 
