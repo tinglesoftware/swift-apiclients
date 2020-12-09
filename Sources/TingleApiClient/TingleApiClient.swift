@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Logging
 
 /**
  * Middleware for performing authentication
@@ -168,6 +169,8 @@ open class TingleApiClient {
                         problem = try! self.decoder.decode(HttpApiResponseProblem.self, from: data!)
 
                     default:
+                        let logger = Logger(label: String(describing: TingleApiClient.self))
+                        logger.error("")
                         print("Response Status Code \(statusCode)")
                     }
                 }
