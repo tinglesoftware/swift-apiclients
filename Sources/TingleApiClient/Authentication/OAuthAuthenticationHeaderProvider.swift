@@ -103,10 +103,10 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
     }
     
     private var accessToken: String {
-        var backoff = BACKOFF_MILLI_SECONDS + Int.random(in: 1...1000)
+        var backoff = OAuthAuthenticationHeaderProvider.BACKOFF_MILLI_SECONDS + Int.random(in: 1...1000)
         
         
-        for index in (1...MAX_ATTEMPTS){
+        for index in (1...OAuthAuthenticationHeaderProvider.MAX_ATTEMPTS){
             print("Attempt \(index) to acquire Auth Token")
           
             // Check if we have an existing token and the token's validity.
@@ -138,7 +138,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
             
             print("Failed to acquire auth code on attempt \(index)")
 
-            if index == MAX_ATTEMPTS {
+            if index == OAuthAuthenticationHeaderProvider.MAX_ATTEMPTS {
                 break
             }
             
