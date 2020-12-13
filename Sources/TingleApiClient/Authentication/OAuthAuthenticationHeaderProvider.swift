@@ -89,3 +89,11 @@ public class OAuthRequest{
         self.resource = resource
     }
 }
+
+
+class OAuthResponse: Decodable {
+    var accessToken: String? = nil
+    var expiresOn: String = "3600"
+    var expiresIn: String = "0"
+}
+
