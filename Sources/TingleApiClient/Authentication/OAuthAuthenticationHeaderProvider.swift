@@ -95,5 +95,19 @@ class OAuthResponse: Decodable {
     var accessToken: String? = nil
     var expiresOn: String = "3600"
     var expiresIn: String = "0"
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.accessToken = try container.decodeIfPresent(String.self, forKey: .accessToken)
+        self.expiresOn = try container.decode(String.self, forKey: .expiresOn)
+        self.expiresIn = try container.decode(String.self, forKey: .expiresIn)
+    }
+    
+    enum CodingKeys: String, CodingKey{
+        case accessToken = "access_token"
+        case expiresOn =  "expires_on"
+        case expiresIn = "expires_in"
+    }
 }
 
