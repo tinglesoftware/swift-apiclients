@@ -112,6 +112,12 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
 
             // Cache token
             CachingUtils.accessToken = response!.accessToken
+            
+            // Calculate and store the time the token expires
+            let expiresIn_ms = Int(response!.expiresIn)! * 1000
+            let expiresAt = (Int(Date().timeIntervalSinceNow) + expiresIn_ms) - 100
+            CachingUtils.accessTokenExpiry = expiresAt
+            
             return response!.accessToken!
         }
         
