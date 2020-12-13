@@ -102,6 +102,15 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
     
     private var accessToken: String {
         
+        // Check if we have an existing token and the token's validity.
+        let accessToken = CachingUtils.accessToken
+        let hasTokenExpired = CachingUtils.hasTokenExpired
+        
+        if accessToken != nil && !accessToken!.isEmpty && !hasTokenExpired{
+            print("Valid token in cache, expiry time: \(CachingUtils.accessTokenExpiry)")
+            return accessToken!
+        }
+        
         // let's request for a new token
         print("Making token acquisition request")
         let response = requestAuthorization
