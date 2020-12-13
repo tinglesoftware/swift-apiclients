@@ -68,6 +68,35 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
         <#code#>
     }
     
+    
+    /**
+     * Requests an accessToken
+     * - Returns the  `OAuthResponse`'
+     */
+    private var requestAuthorization: OAuthResponse?{
+
+        let apiClient = TingleApiClient()
+        
+        let requestBody = "grant_type=client_credentials&client_id=\(oAuthRequest.clientId!)&client_secret=\(oAuthRequest.clientSecret!)&resource=\(oAuthRequest.resource!)".data(using: .utf8)
+        
+        var request = URLRequest(url: URL(string: self.oAuthRequest.authenticationEndpoint!)!)
+        request.httpBody = requestBody
+        request.httpMethod = "POST"
+        request.contentType = "application/x-www-form-urlencoded"
+        
+        var oAuthResponse: OAuthResponse? = nil
+        
+        apiClient.sendRequest(request: &request) { (response:AnyResourceResponse<OAuthResponse>?, error) in
+            
+            if response != nil && response!.successful && response!.resource != nil{
+                oAuthResponse = response!.resource!
+            }
+            
+        }
+        
+        return oAuthResponse
+    }
+    
 }
 
 
