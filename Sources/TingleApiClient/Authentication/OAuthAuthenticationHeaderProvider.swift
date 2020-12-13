@@ -76,6 +76,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
     private var requestAuthorization: OAuthResponse?{
 
         let apiClient = TingleApiClient()
+        let semaphore = DispatchSemaphore(value: 0)
         
         let requestBody = "grant_type=client_credentials&client_id=\(oAuthRequest.clientId!)&client_secret=\(oAuthRequest.clientSecret!)&resource=\(oAuthRequest.resource!)".data(using: .utf8)
         
@@ -92,8 +93,10 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
                 oAuthResponse = response!.resource!
             }
             
+            semaphore.signal()
         }
         
+        _ = semaphore.wait(wallTimeout: .distantFuture)
         return oAuthResponse
     }
     
