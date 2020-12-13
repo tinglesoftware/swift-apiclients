@@ -12,6 +12,8 @@ import Foundation
  */
 public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvider{
     private static let DEFAULT_SCHEME = "Bearer"
+    private static let MAX_ATTEMPTS = 3
+    private static let BACKOFF_MILLI_SECONDS = 2000
     
     private var oAuthRequest: OAuthRequest
     
@@ -74,7 +76,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
      * - Returns the  `OAuthResponse`'
      */
     private var requestAuthorization: OAuthResponse?{
-
+        
         let apiClient = TingleApiClient()
         let semaphore = DispatchSemaphore(value: 0)
         
@@ -101,33 +103,52 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
     }
     
     private var accessToken: String {
-        
-        // Check if we have an existing token and the token's validity.
-        let accessToken = CachingUtils.accessToken
-        let hasTokenExpired = CachingUtils.hasTokenExpired
-        
-        if accessToken != nil && !accessToken!.isEmpty && !hasTokenExpired{
-            print("Valid token in cache, expiry time: \(CachingUtils.accessTokenExpiry)")
-            return accessToken!
-        }
-        
-        // let's request for a new token
-        print("Making token acquisition request")
-        let response = requestAuthorization
+        var backoff = BACKOFF_MILLI_SECONDS + Int.random(in: 1...1000)
         
         
-        if(response != nil){
-            print("Valid token was acquired, expiry time: \(response!.expiresOn)")
+        for index in (1...MAX_ATTEMPTS){
+            print("Attempt \(index) to acquire Auth Token")
+          
+            // Check if we have an existing token and the token's validity.
+            let accessToken = CachingUtils.accessToken
+            let hasTokenExpired = CachingUtils.hasTokenExpired
+            
+            if accessToken != nil && !accessToken!.isEmpty && !hasTokenExpired{
+                print("Valid token in cache, expiry time: \(CachingUtils.accessTokenExpiry)")
+                return accessToken!
+            }
+            
+            // let's request for a new token
+            print("Making token acquisition request, number of attempts = \(index)")
+            let response = requestAuthorization
+            
+            if(response != nil){
+                print("Valid token was acquired, expiry time: \(response!.expiresOn)")
+                
+                // Cache token
+                CachingUtils.accessToken = response!.accessToken
+                
+                // Calculate and store the time the token expires
+                let expiresIn_ms = Int(response!.expiresIn)! * 1000
+                let expiresAt = (Int(Date().timeIntervalSinceNow) + expiresIn_ms) - 100
+                CachingUtils.accessTokenExpiry = expiresAt
+                
+                return response!.accessToken!
+            }
+            
+            print("Failed to acquire auth code on attempt \(index)")
 
-            // Cache token
-            CachingUtils.accessToken = response!.accessToken
+            if index == MAX_ATTEMPTS {
+                break
+            }
             
-            // Calculate and store the time the token expires
-            let expiresIn_ms = Int(response!.expiresIn)! * 1000
-            let expiresAt = (Int(Date().timeIntervalSinceNow) + expiresIn_ms) - 100
-            CachingUtils.accessTokenExpiry = expiresAt
+            do{
+                print("Sleeping for \(backoff) ms before retry")
+                sleep(UInt32(backoff))
+            }
             
-            return response!.accessToken!
+            // increase backoff exponentially
+            backoff *= 2
         }
         
         return ""
