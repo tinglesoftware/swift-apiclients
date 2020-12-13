@@ -24,7 +24,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
         self.oAuthRequest = oAuthRequest
         super.init(scheme)
     }
-   
+    
     /**
      * Initializes an instance of `OAuthAuthenticationHeaderProvider`
      * - Parameter oAuthRequest: The request model to be used to request a token. Contains parameters like clientId, clientSecret e.t.c
@@ -33,7 +33,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
         self.init(OAuthAuthenticationHeaderProvider.DEFAULT_SCHEME, oAuthRequest: oAuthRequest)
     }
     
-   
+    
     /**
      * Initializes an instance of `OAuthAuthenticationHeaderProvider`
      * - Parameter authenticationEndpoint The authentication endpoint to be used to request a token
@@ -57,6 +57,15 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
     public convenience init(_ scheme: String, authenticationEndpoint: String?, clientId: String?,clientSecret: String?, resource: String?) {
         let oAuthRequest = OAuthRequest(authenticationEndpoint: authenticationEndpoint, clientId: clientId, clientSecret: clientSecret, resource: resource)
         self.init(scheme,oAuthRequest: oAuthRequest)
+    }
+    
+    /**
+     * Authorize a request before executing
+     * - Parameter request the request message to be authorized
+     * - Returns  the authentication parameter
+     */
+    public override func getParameter(request: inout URLRequest) -> String {
+        <#code#>
     }
     
 }
