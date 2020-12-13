@@ -110,6 +110,8 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
         if(response != nil){
             print("Valid token was acquired, expiry time: \(response!.expiresOn)")
 
+            // Cache token
+            CachingUtils.accessToken = response!.accessToken
             return response!.accessToken!
         }
         
