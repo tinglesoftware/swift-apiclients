@@ -65,7 +65,7 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
      * - Returns  the authentication parameter
      */
     public override func getParameter(request: inout URLRequest) -> String {
-        <#code#>
+        return accessToken
     }
     
     
@@ -98,6 +98,22 @@ public final class OAuthAuthenticationHeaderProvider: AuthenticationHeaderProvid
         
         _ = semaphore.wait(wallTimeout: .distantFuture)
         return oAuthResponse
+    }
+    
+    private var accessToken: String {
+        
+        // let's request for a new token
+        print("Making token acquisition request")
+        let response = requestAuthorization
+        
+        
+        if(response != nil){
+            print("Valid token was acquired, expiry time: \(response!.expiresOn)")
+
+            return response!.accessToken!
+        }
+        
+        return ""
     }
     
 }
