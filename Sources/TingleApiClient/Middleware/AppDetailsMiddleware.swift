@@ -15,6 +15,7 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
     private let bundleId: String
     private let shortBundleVersion: String
     private let bundleVersion: String
+    private let appKind: String
 
     /**
      * Intitialize and instance of `AppDetailsMiddleware`
@@ -23,10 +24,11 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
      * - Parameter shortBundleVersion: The short version of the application bundle
      * - Parameter bundleVersion: The version of the application bundle
      */
-    public init (_ bundleId: String, _ shortBundleVersion: String, _ bundleVersion: String) {
+    public init (_ bundleId: String, _ shortBundleVersion: String, _ bundleVersion: String, _appKind: String) {
         self.bundleId = bundleId
         self.shortBundleVersion = shortBundleVersion
         self.bundleVersion = bundleVersion
+        self.appKind = _appKind
     }
     
     /**
@@ -35,9 +37,10 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
      * - Parameter request: The request that needs to be processed before sending
      */
     public func process(request: inout URLRequest) -> URLRequest {
-        request.setValue(bundleId, forHTTPHeaderField: "AppPackageId")
-        request.setValue(shortBundleVersion, forHTTPHeaderField: "AppVersionName")
-        request.setValue(bundleVersion, forHTTPHeaderField: "AppVersionCode")
+        request.setValue(bundleId, forHTTPHeaderField: "X-App-Package-Id")
+        request.setValue(shortBundleVersion, forHTTPHeaderField: "X-App-Version-Name")
+        request.setValue(bundleVersion, forHTTPHeaderField: "X-App-Version-Code")
+        request.setValue(appKind, forHTTPHeaderField: "X-App-Kind")
 
         return request
     }
