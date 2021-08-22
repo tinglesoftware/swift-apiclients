@@ -41,6 +41,46 @@ public class MultipartBody: Codable{
             return try! create(request: request, data: body)
         }
     }
+    
+    public struct Builder {
+        private let boundery = "\(UUID().uuidString)".data(using: .utf8)
+        private let type: MediaType = .MIXED
+        private let parts: Array<Part>
+    }
 }
 
 
+public enum MediaType: String {
+    /**
+     * The "mixed" subtype of "multipart" is intended for use when the body parts are independent and need to be bundled in a particular order.
+     * Any "multipart" subtypes that an implementation does not recognize must be treated as being of subtype "mixed".
+     */
+    case MIXED = "multipart/mixed"
+    
+    /**
+     * The "multipart/alternative" type is syntactically identical to "multipart/mixed", but the semantics are different. In particular, each of the body
+     * parts is an "alternative" version of the same information.
+     */
+    case ALTERNATIVE = "multipart/alternative"
+    
+    /**
+     * This type is syntactically identical to "multipart/mixed", but the semantics are different.
+     * In particular, in a digest, the default `Content-Type` value for a body part is changed from
+     * "text/plain" to "message/rfc822".
+     */
+    case DIGEST = "multipart/digest"
+    
+    
+    /**
+     * This type is syntactically identical to "multipart/mixed", but the semantics are different.
+     * In particular, in a parallel entity, the order of body parts is not significant.
+     */
+    case PARALLEL = "multipart/parallel"
+    
+    /**
+     * The media-type multipart/form-data follows the rules of all multipart MIME data streams as
+     * outlined in RFC 2046. In forms, there are a series of fields to be supplied by the user who
+     * fills out the form. Each field has a name. Within a given form, the names are unique.
+     */
+    case FORM = "multipart/form-data"
+}
