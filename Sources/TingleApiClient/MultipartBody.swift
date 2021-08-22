@@ -1,7 +1,17 @@
 
 import Foundation
 
-public class MultipartBody: Codable{
+public class MultipartBody{
+    private let boundery: Data
+    private var type: MediaType
+    private var parts: Array<Part>
+    
+    
+    init(boundery: Data, type: MediaType, parts: Array<Part>) {
+        self.boundery = boundery
+        self.type = type
+        self.parts = parts
+    }
     
     struct Part{
         let request: URLRequest?
@@ -28,6 +38,10 @@ public class MultipartBody: Codable{
             return Part(request: request, body: data)
         }
         
+        static func createFormData(request: inout URLRequest, name: String, value: String) -> Part{
+            return createFormData(request: &request, name: name, fileName: nil, body: value.data(using: .utf8)!)
+        }
+        
         static func createFormData(request: inout URLRequest,name: String, fileName: String?, body: Data) -> Part{
             var disposition = "form-data; name=\"\(name)\""
             
@@ -42,10 +56,72 @@ public class MultipartBody: Codable{
         }
     }
     
-    public struct Builder {
-        private let boundery = "\(UUID().uuidString)".data(using: .utf8)
-        private let type: MediaType = .MIXED
-        private let parts: Array<Part>
+    public class Builder {
+        private let boundery = "\(UUID().uuidString)".data(using: .utf8)!
+        private var type: MediaType = .MIXED
+        private var parts: Array<Part> = []
+        private var request: URLRequest
+        
+        public  init(_ request: URLRequest) {
+            self.request = request
+        }
+        
+        /**
+         * Set the MIME type.
+         */
+        public func setType(type: MediaType)-> Self{
+            self.type = type
+            return self
+        }
+        
+        /**
+         * Add a part to the body.
+         */
+        public func addPart(body: Data) -> Self{
+            parts.append(Part.create(body: body))
+            return self
+        }
+        
+        /**
+         * Add a part to the body.
+         */
+        public func addPart(request: URLRequest,body: Data) -> Self{
+            parts.append(try! Part.create(request: request,data: body))
+            return self
+        }
+        
+        /**
+         * Add a parts to the body.
+         */
+        func addPart(part: Part) -> Self{
+            parts.append(part)
+            return self
+        }
+        
+        
+        /**
+         * Add a part to the body.
+         */
+        public func addFormDataPart(name: String, value: String) -> Self {
+            let part = Part.createFormData(request: &request, name: name, value: value)
+            let _ = addPart(part: part)
+            return self
+        }
+        
+        /**
+         * Add a part to the body.
+         */
+        public func addFormDataPart(name: String, fileName: String, withData body:Data ) -> Self {
+            let part = Part.createFormData(request: &request, name: name, fileName: fileName, body: body)
+            let _ = addPart(part: part)
+            return self
+        }
+        
+        
+        public func build() throws -> MultipartBody {
+            if parts.isEmpty{ fatalError("Mutlipart body must have at least one part")}
+            return MultipartBody(boundery: boundery, type: type, parts: parts)
+        }
     }
 }
 
