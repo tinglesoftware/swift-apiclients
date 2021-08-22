@@ -18,12 +18,21 @@ extension URLRequest {
         }
     }
     
+    public var contentLength: String?{
+        get{
+            self.value(forHTTPHeaderField: "Content-Length")
+        }
+        set {
+            self.setValue(newValue, forHTTPHeaderField: "Content-Length")
+        }
+    }
+    
     public var bodyHasUnknownEncoding: Bool {
         get {
             let contentEncoding = self.value(forHTTPHeaderField: "Content-Encoding")
             return (contentEncoding != nil/*
-                && contentEncoding!.caseInsensitiveCompare("identity") != .orderedSame
-                && contentEncoding!.caseInsensitiveCompare("gzip") != .orderedSame*/)
+                    && contentEncoding!.caseInsensitiveCompare("identity") != .orderedSame
+                    && contentEncoding!.caseInsensitiveCompare("gzip") != .orderedSame*/)
         }
     }
 }
@@ -55,31 +64,31 @@ extension HTTPURLResponse {
         get {
             let contentEncoding = self.allHeaderFields["Content-Encoding"] as? String
             return (contentEncoding != nil
-                && contentEncoding!.caseInsensitiveCompare("identity") != .orderedSame
-                && contentEncoding!.caseInsensitiveCompare("gzip") != .orderedSame)
+                        && contentEncoding!.caseInsensitiveCompare("identity") != .orderedSame
+                        && contentEncoding!.caseInsensitiveCompare("gzip") != .orderedSame)
         }
     }
     
     var hasBody: Bool {
         get {
-//            // HEAD requests never yield a body regardless of the response headers.
-//            if (response.request().method().equals("HEAD")) {
-//              return false;
-//            }
-
+            //            // HEAD requests never yield a body regardless of the response headers.
+            //            if (response.request().method().equals("HEAD")) {
+            //              return false;
+            //            }
+            
             let responseCode = self.statusCode
             if ((responseCode < 100 || responseCode >= 200)
-                && responseCode != 204
-                && responseCode != 304) {
-              return true;
+                    && responseCode != 204
+                    && responseCode != 304) {
+                return true;
             }
-
+            
             // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
             // response is malformed. For best compatibility, we honor the headers.
             if (contentLength != -1 || "chunked".caseInsensitiveCompare(transferEncoding ?? "") == .orderedSame) {
-              return true;
+                return true;
             }
-
+            
             return false;
         }
     }
