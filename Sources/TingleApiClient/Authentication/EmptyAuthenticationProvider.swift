@@ -16,6 +16,8 @@ import Foundation
 */
 public final class EmptyAuthenticationProvider: IAuthenticationProvider {
 
+    public init(){}
+    
     /**
      * Process a request before sending
      *
