@@ -13,6 +13,13 @@ public class MultipartBody{
         self.parts = parts
     }
     
+    
+    func toRequestBody()-> Data {
+        let body = NSMutableData()
+        
+        return body as Data
+    }
+    
     struct Part{
         let request: URLRequest?
         let body: Data
@@ -31,9 +38,9 @@ public class MultipartBody{
                 fatalError("Unexpected header: Content-Type")
             }
             
-            if (request?.contentLength == nil) {
-                fatalError("Unexpected header: Content-Length")
-            }
+            //            if (request?.contentLength == nil) {
+            //                fatalError("Unexpected header: Content-Length")
+            //            }
             
             return Part(request: request, body: data)
         }
@@ -43,11 +50,12 @@ public class MultipartBody{
         }
         
         static func createFormData(request: inout URLRequest,name: String, fileName: String?, body: Data) -> Part{
-            var disposition = "form-data; name=\"\(name)\""
+            var disposition = "form-data; name="
+            disposition.appendQuotedString(key: name)
             
             if fileName != nil{
                 disposition.append("; filename=")
-                disposition.append("\"\(fileName!)\"")
+                disposition.appendQuotedString(key: fileName!)
             }
             
             request.setValue(disposition, forHTTPHeaderField: "Content-Disposition")
