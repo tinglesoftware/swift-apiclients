@@ -13,7 +13,7 @@ class MutlipartBodyTests: XCTestCase{
             .addFormDataPart(name: "Currecny", value:"USD")
             .addFormDataPart(name: "Amount", value: "1234")
             .build()
-        
-        print("Body \(body)")
+                
+        request.httpBody = body.toRequestBody()
     }
 }

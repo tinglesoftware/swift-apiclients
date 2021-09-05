@@ -2,22 +2,40 @@
 import Foundation
 
 public class MultipartBody{
-    private let boundery: Data
+    private let boundary: Data
     private var type: MediaType
     private var parts: Array<Part>
     
     
-    init(boundery: Data, type: MediaType, parts: Array<Part>) {
-        self.boundery = boundery
+    init(boundary: Data, type: MediaType, parts: Array<Part>) {
+        self.boundary = boundary
         self.type = type
         self.parts = parts
     }
     
     
-    func toRequestBody()-> Data {
-        let body = NSMutableData()
-        
-        return body as Data
+    public func toRequestBody() -> Data {
+        let data = NSMutableData()
+        for part in parts {
+            let body = part.body
+            let headers = part.request?.allHTTPHeaderFields
+            
+            let lineBreak = "\r\n"
+            let boundaryPrefix = "--\(boundary)\r\n"
+            data.appendString(boundaryPrefix)
+            
+            if headers != nil {
+                for header in headers!{
+                    data.appendString("\(header.key):\(header.value)\r\n")
+                }
+            }
+            
+            data.append(body)
+            
+            data.appendString("\r\n")
+            data.appendString("--\(boundary)--\(lineBreak)")
+        }
+        return data as Data
     }
     
     struct Part{
@@ -65,7 +83,7 @@ public class MultipartBody{
     }
     
     public class Builder {
-        private let boundery = "\(UUID().uuidString)".data(using: .utf8)!
+        private let boundary = "\(UUID().uuidString)".data(using: .utf8)!
         private var type: MediaType = .MIXED
         private var parts: Array<Part> = []
         private var request: URLRequest
@@ -128,7 +146,7 @@ public class MultipartBody{
         
         public func build() throws -> MultipartBody {
             if parts.isEmpty{ fatalError("Mutlipart body must have at least one part")}
-            return MultipartBody(boundery: boundery, type: type, parts: parts)
+            return MultipartBody(boundary: boundary, type: type, parts: parts)
         }
     }
 }
