@@ -88,16 +88,9 @@ public class MultipartBody{
         private var parts: Array<Part> = []
         private var request: URLRequest
         
-        public  init(_ request: URLRequest) {
+        public  init(_ request: URLRequest, type: MediaType) {
             self.request = request
-        }
-        
-        /**
-         * Set the MIME type.
-         */
-        public func setType(type: MediaType)-> Self{
-            self.type = type
-            return self
+            self.request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         }
         
         /**
