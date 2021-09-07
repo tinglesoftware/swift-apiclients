@@ -32,9 +32,8 @@ public class MultipartBody{
             }
             
             data.append(body)
-            
+            data.appendString("\r\n")            
         }
-        data.appendString("\r\n")
         data.appendString("--\(boundary)--\(lineBreak)")
         
         return data as Data
