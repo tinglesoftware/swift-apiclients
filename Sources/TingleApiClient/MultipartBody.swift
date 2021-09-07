@@ -2,12 +2,12 @@
 import Foundation
 
 public class MultipartBody{
-    private let boundary: Data
+    private let boundary: String
     private var type: MediaType
     private var parts: Array<Part>
     
     
-    init(boundary: Data, type: MediaType, parts: Array<Part>) {
+    init(boundary: String, type: MediaType, parts: Array<Part>) {
         self.boundary = boundary
         self.type = type
         self.parts = parts
@@ -83,7 +83,7 @@ public class MultipartBody{
     }
     
     public class Builder {
-        private let boundary = "\(UUID().uuidString)".data(using: .utf8)!
+        private let boundary = "\(UUID().uuidString)"
         private var type: MediaType = .MIXED
         private var parts: Array<Part> = []
         private var request: URLRequest
