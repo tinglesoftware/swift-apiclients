@@ -31,6 +31,8 @@ public class MultipartBody{
                 }
             }
             
+            data.appendString("Content-Length: \(body.count)\r\n\r\n")
+            
             data.append(body)
             data.appendString("\r\n")            
         }
