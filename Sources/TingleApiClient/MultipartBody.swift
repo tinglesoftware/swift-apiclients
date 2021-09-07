@@ -16,11 +16,12 @@ public class MultipartBody{
     
     public func toRequestBody() -> Data {
         let data = NSMutableData()
+        let lineBreak = "\r\n"
+        
         for part in parts {
             let body = part.body
-            let headers = part.request?.allHTTPHeaderFields
+            let headers = part.headers
             
-            let lineBreak = "\r\n"
             let boundaryPrefix = "--\(boundary)\r\n"
             data.appendString(boundaryPrefix)
             
@@ -32,18 +33,19 @@ public class MultipartBody{
             
             data.append(body)
             
-            data.appendString("\r\n")
-            data.appendString("--\(boundary)--\(lineBreak)")
         }
+        data.appendString("\r\n")
+        data.appendString("--\(boundary)--\(lineBreak)")
+        
         return data as Data
     }
     
     struct Part{
-        let request: URLRequest?
+        let headers: [String : String]?
         let body: Data
         
-        init(request:URLRequest? = nil, body:Data ) {
-            self.request = request
+        init(headers: [String: String]? = nil, body:Data ) {
+            self.headers = headers
             self.body = body
         }
         
@@ -51,23 +53,19 @@ public class MultipartBody{
             return Part(body: body)
         }
         
-        static func create(request: URLRequest?, data:Data) throws -> Part{
-            if (request?.contentType == nil) {
+        static func create(headers: [String: String]?, data:Data) throws -> Part{
+            if (headers == nil && headers!["Content-Type"] == nil) {
                 fatalError("Unexpected header: Content-Type")
             }
             
-            //            if (request?.contentLength == nil) {
-            //                fatalError("Unexpected header: Content-Length")
-            //            }
-            
-            return Part(request: request, body: data)
+            return Part(headers: headers, body: data)
         }
         
-        static func createFormData(request: inout URLRequest, name: String, value: String) -> Part{
-            return createFormData(request: &request, name: name, fileName: nil, body: value.data(using: .utf8)!)
+        static func createFormData(name: String, value: String) -> Part{
+            return createFormData(name: name, fileName: nil, body: value.data(using: .utf8)!)
         }
         
-        static func createFormData(request: inout URLRequest,name: String, fileName: String?, body: Data) -> Part{
+        static func createFormData(name: String, fileName: String?, body: Data) -> Part{
             var disposition = "form-data; name="
             disposition.appendQuotedString(key: name)
             
@@ -76,9 +74,10 @@ public class MultipartBody{
                 disposition.appendQuotedString(key: fileName!)
             }
             
-            request.setValue(disposition, forHTTPHeaderField: "Content-Disposition")
+            var headers =  Dictionary<String,String>()
+            headers["Content-Disposition"] = disposition
             
-            return try! create(request: request, data: body)
+            return try! create(headers: headers, data: body)
         }
     }
     
@@ -86,11 +85,9 @@ public class MultipartBody{
         private let boundary = "\(UUID().uuidString)"
         private var type: MediaType = .MIXED
         private var parts: Array<Part> = []
-        private var request: URLRequest
-        
-        public  init(_ request: URLRequest, type: MediaType) {
-            self.request = request
-            self.request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        public  init(_ request: inout URLRequest, type: MediaType) {
+            request.setValue("\(type.rawValue); boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         }
         
         /**
@@ -104,8 +101,8 @@ public class MultipartBody{
         /**
          * Add a part to the body.
          */
-        public func addPart(request: URLRequest,body: Data) -> Self{
-            parts.append(try! Part.create(request: request,data: body))
+        public func addPart(headers: inout [String: String], body: Data) -> Self{
+            parts.append(try! Part.create(headers: headers,data: body))
             return self
         }
         
@@ -122,7 +119,7 @@ public class MultipartBody{
          * Add a part to the body.
          */
         public func addFormDataPart(name: String, value: String) -> Self {
-            let part = Part.createFormData(request: &request, name: name, value: value)
+            let part = Part.createFormData(name: name, value: value)
             let _ = addPart(part: part)
             return self
         }
@@ -131,7 +128,7 @@ public class MultipartBody{
          * Add a part to the body.
          */
         public func addFormDataPart(name: String, fileName: String, withData body:Data ) -> Self {
-            let part = Part.createFormData(request: &request, name: name, fileName: fileName, body: body)
+            let part = Part.createFormData(name: name, fileName: fileName, body: body)
             let _ = addPart(part: part)
             return self
         }
