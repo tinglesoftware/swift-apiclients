@@ -125,7 +125,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
         let bytes = dataToHash.compactMap { $0 }
         
         // hash the data
-        let hmac = HMAC(key: key, variant: .sha256)
+        let hmac = HMAC(key: key, variant: .sha2(.sha256))
         if let hashed = try? hmac.authenticate(bytes) {
             let hashedData = Data(hashed.compactMap { $0 })
             
