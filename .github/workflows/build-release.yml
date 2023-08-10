@@ -1,0 +1,25 @@
+name: Build and Publish
+
+on:
+  push:
+    tags:
+      - '*'
+    paths-ignore: # do not trigger for changes:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
+      - docs/**
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Resolve dependencies
+      run: swift package resolve
+      continue-on-error: true
+    - name: Build
+      run: swift build -v
+      continue-on-error: true
