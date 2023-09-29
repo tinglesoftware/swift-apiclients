@@ -40,7 +40,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
     }
     
     /**
-     * Gets the paramter that should be included in the `Authorization` header
+     * Gets the parameter that should be included in the `Authorization` header
      *
      * - Parameter request: The request that needs to be processed before sending
      */
