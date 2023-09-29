@@ -100,7 +100,7 @@ open class TingleApiClient {
      * `completionHandler` closure but the `Error?` parameter is set to `nil`.
      *
      * - Parameter request: The request to be sent
-     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
+     * - Parameter completionHandler: The closure to call when the call completes whether is was successful or not
      */
     @discardableResult
     public func sendRequest<TResource: Decodable>(request: inout URLRequest,
@@ -126,7 +126,7 @@ open class TingleApiClient {
      *
      * - Parameter request: The request to be sent
      * - Parameter resultBuilder: The closure to call when the network call succeeds whether or not the HTTP response indicares success
-     * - Parameter completionHandler: The closure to call when the call completes wether is was successful or not
+     * - Parameter completionHandler: The closure to call when the call completes whether is was successful or not
      */
     @discardableResult
     public func sendRequest<TResource: Decodable, TResourceResponse: ResourceResponse>(
