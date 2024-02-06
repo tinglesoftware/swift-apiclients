@@ -9,6 +9,14 @@ updates:
 - package-ecosystem: "swift" # See documentation for possible values
   directory: "/" # Location of package manifests
   schedule:
-    interval: daily
+    interval: "daily"
     time: "18:00"
-  open-pull-requests-limit: 10
+  reviewers:
+  - SecyWecy
+- package-ecosystem: "github-actions" # See documentation for possible values
+  directory: "/" # Location of package manifests
+  schedule:
+    interval: "weekly"
+    time: "02:00"
+  reviewers:
+  - SecyWecy
