@@ -6,17 +6,18 @@
 version: 2
 enable-beta-ecosystems: true
 updates:
-- package-ecosystem: "swift" # See documentation for possible values
-  directory: "/" # Location of package manifests
-  schedule:
-    interval: "daily"
-    time: "18:00"
-  reviewers:
-  - SecyWecy
-- package-ecosystem: "github-actions" # See documentation for possible values
-  directory: "/" # Location of package manifests
-  schedule:
-    interval: "weekly"
-    time: "02:00"
-  reviewers:
-  - SecyWecy
+  - package-ecosystem: "swift" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "daily"
+      time: "18:00"
+    reviewers:
+      - sethonyango
+  - package-ecosystem: "github-actions" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+      time: "02:00"
+    reviewers:
+      - sethonyango
+      - mburumaxwell
