@@ -1,6 +1,14 @@
 name: Build PR
 
 on:
+  push:
+    tags:
+      - '*'
+    paths-ignore: # do not trigger for changes:
+      - README.md
+      - LICENSE
+      - CHANGELOG.md
+      - docs/**
   pull_request:
     branches: [ main ]
     paths-ignore: # do not trigger for changes:
@@ -10,17 +18,18 @@ on:
       - docs/**
 
 jobs:
-  build:
-
+  Build:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Resolve dependencies
       run: swift package resolve
-      continue-on-error: true
-    - name: Run tests
+
+    - name: Build
+      run: swift build -v
+
+    - name: Test
       run: swift test -v
-      ## setting continue-on-error: true will cause failure
-      ## because 'swift test' writes content to stderr
-      #continue-on-error: true
