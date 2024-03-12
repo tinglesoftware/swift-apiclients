@@ -33,3 +33,4 @@ included-files:
 
 excluded-files:
   - "*.plist"
+  - ".vscode/settings.json"
