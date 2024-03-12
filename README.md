@@ -26,14 +26,14 @@ apiClient.send(&request) { (response: ResourceResponse<[Profile]>?, error: Error
         // handle error here
         return
     }
-    
+
     // if the error is nil the response should not be nil
     // but lets just check for the sake of checking
     if (response == nil) {
         // should not happen
         return
     }
-    
+
     // check if the response was successful
     if (response!.successful && response!.resource != nil) {
         let profiles = response!.resource!
@@ -53,19 +53,19 @@ import TingleApiClient
 
 public class ProfilesApiClient: TingleApiClient {
     private let baseUrl = "https://api.example.com"
-    
+
     override public func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder) {
         encoder.dateEncodingStrategy = .iso8601
         decoder.dateDecodingStrategy = .iso8601
     }
-    
+
     override public func buildMiddleware() -> [TingleApiClientMiddleware] {
         [
             AppDetailsMiddleware(Bundle.main.bundleIdentifier ?? "", Bundle.main.shortBundleVersion, Bundle.main.shortBundleVersion),
             LoggingMiddleware(.BODY, .info)
         ]
     }
-    
+
     @discardableResult
     public func getProfiles(_ completionHandler: @escaping (ResourceResponse<[Profile]>?, error: Error?) -> Void) -> URLSessionTask {
         let url = URL(string: "\(baseUrl)/v2/profiles")!
@@ -83,7 +83,7 @@ import TingleApiClient
 
 public class DownloadManager {
     private static let client = ProfilesApiClient()
-    
+
     @discardableResult
     public static func downloadProfiles() -> URLSessionTask {
         return client.getProfiles { (response: ResourceResponse<[Profile]>) in

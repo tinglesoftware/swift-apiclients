@@ -17,7 +17,7 @@ import Foundation
 public final class EmptyAuthenticationProvider: IAuthenticationProvider {
 
     public init(){}
-    
+
     /**
      * Process a request before sending
      *
@@ -27,7 +27,7 @@ public final class EmptyAuthenticationProvider: IAuthenticationProvider {
         // nothing to do here
         return request
     }
-    
+
     /**
      * Process a response received
      *
@@ -36,6 +36,6 @@ public final class EmptyAuthenticationProvider: IAuthenticationProvider {
      * - Parameter error: An error processing the request
      */
     public func process(response: URLResponse?, data: Data?, error: Error?) {
-        
+
     }
 }

@@ -44,7 +44,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
     public convenience init (_ scheme: String, _ dateHeaderName: String, base64Key: String) {
         self.init(scheme, dateHeaderName, keyData: Data(base64Encoded: base64Key)!)
     }
-    
+
     /**
      * Initializes an instance of `SharedKeyAuthenticationProvider`
      * - Parameter scheme: The scheme to set in the `Authorization` header
@@ -100,7 +100,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
             rfcDate = formatter.string(from: Date())
             request.setValue(rfcDate, forHTTPHeaderField: dateHeaderName)
         }
-        
+
         // return the signed version
         return sign(method: method, contentLength: Int64(contentLength), contentType: contentType, date: rfcDate!, resource: path)!
     }
@@ -120,19 +120,19 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
         let parts = [method, "\(contentLength)", contentType, "\(dateHeaderName):\(date)", resource]
         let stringToHash = parts.joined(separator: "\n")
         let dataToHash = stringToHash.data(using: .ascii, allowLossyConversion: false)!
-        
+
         let key = keyData.compactMap { $0 }
         let bytes = dataToHash.compactMap { $0 }
-        
+
         // hash the data
         let hmac = HMAC(key: key, variant: .sha2(.sha256))
         if let hashed = try? hmac.authenticate(bytes) {
             let hashedData = Data(hashed.compactMap { $0 })
-            
+
             // encode to base 64
             return hashedData.base64EncodedString()
         }
-        
+
         return nil
     }
 }

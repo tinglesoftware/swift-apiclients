@@ -13,12 +13,12 @@ import Foundation
  * The parameter set is gotten from the abstract method `getParameter(request: inout URLRequest)`.
  */
 open class AuthenticationHeaderProvider: IAuthenticationProvider {
-    
+
     /**
      * The scheme to be set in the `Authorization` header
      */
     public let scheme: String
-    
+
     /**
      * Initializes an instance of `AuthenticationHeaderProvider`
      * - Parameter scheme: The scheme to set in the `Authorization` header
@@ -26,7 +26,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
     public init(_ scheme: String = "Bearer") {
         self.scheme = scheme
     }
-    
+
     /**
      * Process a request before sending
      *
@@ -38,7 +38,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
         request.setValue(headerValue, forHTTPHeaderField: "Authorization")
         return request
     }
-    
+
     /**
      * Gets the parameter that should be included in the `Authorization` header
      *
@@ -47,7 +47,7 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
     open func getParameter(request: inout URLRequest) -> String {
         fatalError("getParameter must be implemented")
     }
-    
+
     /**
      * Process a response received
      *
@@ -56,6 +56,6 @@ open class AuthenticationHeaderProvider: IAuthenticationProvider {
      * - Parameter error: An error processing the request
      */
     public func process(response: URLResponse?, data: Data?, error: Error?) {
-        
+
     }
 }

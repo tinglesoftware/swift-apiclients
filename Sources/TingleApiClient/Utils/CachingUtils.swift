@@ -1,6 +1,6 @@
 //
 //  CachingUtils.swift
-//  
+//
 //
 //  Created by Seth Onyango on 13/12/2020.
 //
@@ -20,7 +20,7 @@ struct CachingUtils {
             defaults.set(newValue, forKey: PREF_ACCESS_TOKEN)
         }
     }
-    
+
     static var accessTokenExpiry: CLong {
         get{
             defaults.integer(forKey: PREF_ACCESS_TOKEN_EXPIRY)
@@ -28,7 +28,7 @@ struct CachingUtils {
             defaults.set(newValue, forKey: PREF_ACCESS_TOKEN_EXPIRY)
         }
     }
-    
+
     static var hasTokenExpired: Bool {
         let currentTime_ms = Int(Date().timeIntervalSinceNow * 1000)
         return currentTime_ms >= accessTokenExpiry

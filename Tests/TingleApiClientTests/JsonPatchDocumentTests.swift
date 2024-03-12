@@ -11,11 +11,11 @@ import XCTest
 
 
 class JsonPatchDocumentTest: XCTestCase {
-    
+
     func testSerializationProducedExpectedJson() {
         let document = JsonPatchDocument()
             .replace(path: "Name", value: "Mr.Zero")
-                
+
         let expectedJson = "[{\"op\":\"replace\",\"path\":\"Name\",\"value\":\"Mr.Zero\"}]"
         let encoder = JSONEncoder()
         let data = try! encoder.encode(document.getOperations())

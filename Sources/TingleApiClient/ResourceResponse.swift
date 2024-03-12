@@ -10,27 +10,27 @@ import Foundation
 
 public protocol ResourceResponse {
     associatedtype TResource
-    
+
     /**
      * The status code of the response
      */
     var statusCode: Int { get }
-    
+
     /**
      * The headers of the response
      */
     var headers: Any { get }
-    
+
     /**
      * The de-serialized resource
      */
     var resource: TResource? { get }
-    
+
     /**
      * The error de-serialized from the response
      */
     var problem: HttpApiResponseProblem? { get }
-    
+
     /**
      * - Parameter statusCode: The status code of the response.
      * - Parameter headers: The headers of the response
@@ -41,7 +41,7 @@ public protocol ResourceResponse {
 }
 
 extension ResourceResponse {
-    
+
     public var unauthorized: Bool { statusCode == 401 }
 
     public var successful: Bool { 200...299 ~= statusCode }

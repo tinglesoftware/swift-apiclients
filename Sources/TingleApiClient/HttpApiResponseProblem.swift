@@ -16,19 +16,19 @@ public class HttpApiResponseProblem: Codable {
      * is assumed to be "about:blank".
      */
     public var type: String? = nil
-    
+
     /**
      * A short, human-readable summary of the problem type.It SHOULD NOT change from occurrence
      * to occurrence of the problem, except for purposes of localization(e.g., using proactive
      * content negotiation; see[RFC7231], Section 3.4).
      */
     public var title: String? = nil
-    
+
     /**
      * A human-readable explanation specific to this occurrence of the problem.
      */
     public var detail: String? = nil
-    
+
     /**
      * A URI reference that identifies the specific occurrence of the problem.It may or may
      * not yield further information if dereferenced.
@@ -39,8 +39,8 @@ public class HttpApiResponseProblem: Codable {
      * Gets the validation errors associated with this instance of `HttpApiResponseProblem`.
      */
     public var errors: Dictionary<String, [String]>? = nil
- 
-    
+
+
     /**
      * The standard code for the error
      */

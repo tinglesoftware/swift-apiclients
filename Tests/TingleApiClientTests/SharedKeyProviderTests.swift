@@ -30,7 +30,7 @@ class SharedKeyProviderTests: XCTestCase {
         XCTAssertNotNil(headerValue)
         XCTAssertEqual("SharedKey v9LNWEDKJ65oSHnPqDW8akUCYz97Kcu+UGie0qZbO4k=", headerValue)
     }
-    
+
     func testProviderWorksForPost() {
         // prepare the http request message
         let url = URL(string: "https://scoppe.people.tinglesoftware.com/api/v1.1/iprs?idNumber=12345678")!
@@ -51,7 +51,7 @@ class SharedKeyProviderTests: XCTestCase {
         XCTAssertNotNil(headerValue)
         XCTAssertEqual("SharedKey wvvxU8t2ocF0lY2GOmkQSepiUGhjuQnGqMCzfTxhfX0=", headerValue)
     }
-    
+
     func testProviderAddsDateHeader() {
         // prepare the http request message
         let url = URL(string: "https://scoppe.people.tinglesoftware.com/api/v1.1/iprs?idNumber=12345678")!

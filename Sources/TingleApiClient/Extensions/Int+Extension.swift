@@ -1,6 +1,6 @@
 //
 //  Int+Extension.swift
-//  
+//
 //
 //  Created by Maxwell Weru on 5/28/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
