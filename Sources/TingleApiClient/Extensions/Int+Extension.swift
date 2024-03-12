@@ -1,5 +1,5 @@
 //
-//  Int+Extenstion.swift
+//  Int+Extension.swift
 //  
 //
 //  Created by Maxwell Weru on 5/28/20.
@@ -13,15 +13,15 @@ extension Int {
     func formatAbbreviated () -> String {
         let numFormatter = NumberFormatter()
 
-        typealias Abbrevation = (threshold:Double, divisor:Double, suffix:String)
-        let abbreviations:[Abbrevation] = [(0, 1, ""),
+        typealias Abbreviation = (threshold:Double, divisor:Double, suffix:String)
+        let abbreviations:[Abbreviation] = [(0, 1, ""),
                                            (1000.0, 1000.0, "K"),
                                            (100_000.0, 1_000_000.0, "M"),
                                            (100_000_000.0, 1_000_000_000.0, "B"),
                                            (100_000_000_000.0, 1_000_000_000_000.0, "T")]
                                            // you can add more !
         let startValue = Double (abs(self))
-        let abbreviation:Abbrevation = {
+        let abbreviation:Abbreviation = {
             var prevAbbreviation = abbreviations[0]
             for tmpAbbreviation in abbreviations {
                 if (startValue < tmpAbbreviation.threshold) {

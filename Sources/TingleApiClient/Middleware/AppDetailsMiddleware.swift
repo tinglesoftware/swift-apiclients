@@ -18,7 +18,7 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
     private let appKind: String
 
     /**
-     * Intitialize and instance of `AppDetailsMiddleware`
+     * Initialize and instance of `AppDetailsMiddleware`
      *
      * - Parameter bundleId: The identifier of the application bundle
      * - Parameter shortBundleVersion: The short version of the application bundle

@@ -111,7 +111,7 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
      * - Parameter method: The HTTP request method
      * - Parameter contentLength: The value for the `Content-Length`header
      * - Parameter contentType: The value for the `Content-Type`header
-     * - Parameter date: The date alue used to make the request, set in the header with key specified by `dateHeaderName`
+     * - Parameter date: The date value used to make the request, set in the header with key specified by `dateHeaderName`
      * - Parameter resource: The resource that is being accessed
      */
     private func sign(method: String, contentLength: Int64, contentType: String, date: String, resource: String) -> String? {

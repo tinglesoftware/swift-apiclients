@@ -24,7 +24,7 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
      *
      * - Parameter level: The level of data from a request/response to log. This defaults to `.NONE`.
      * - Parameter logLevel: The logging level to use when writing the logs to the output. This depends on the logging implementation in use. The default level is `.trace`
-     * - Parameter loggerLabel: The lable to use for use when logging. This is useful for filtering logs. When not provided, it defaults to the name of this class i.e.`String(describing: LoggingMiddleware.self)`
+     * - Parameter loggerLabel: The label to use for use when logging. This is useful for filtering logs. When not provided, it defaults to the name of this class i.e.`String(describing: LoggingMiddleware.self)`
      */
     public init(_ level: Level = .NONE, _ logLevel: Logger.Level = Logger.Level.trace, loggerLabel: String = String(describing: LoggingMiddleware.self)) {
         self.logger = Logger(label: loggerLabel)
