@@ -1,6 +1,6 @@
 //
 //  AppDetailsMiddleware.swift
-//  
+//
 //
 //  Created by Maxwell Weru on 1/21/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
@@ -30,7 +30,7 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
         self.bundleVersion = bundleVersion
         self.appKind = _appKind
     }
-    
+
     /**
      * Process a request before sending
      *
@@ -44,7 +44,7 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
 
         return request
     }
-    
+
     /**
      * Process a response received
      *
@@ -53,7 +53,7 @@ public final class AppDetailsMiddleware: TingleApiClientMiddleware {
      * - Parameter error: An error processing the request
      */
     public func process(response: URLResponse?, data: Data?, error: Error?) {
-        
+
     }
 }
 

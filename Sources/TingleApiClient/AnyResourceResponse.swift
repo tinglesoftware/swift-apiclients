@@ -9,27 +9,27 @@
 import Foundation
 
 public final class AnyResourceResponse<TResource>: ResourceResponse {
-    
+
     /**
      * The status code of the response
      */
     public let statusCode: Int
-    
+
     /**
      * The headers of the response
      */
     public let headers: Any
-    
+
     /**
      * The de-serialized resource
      */
     public let resource: TResource?
-    
+
     /**
      * The error de-serialized from the response
      */
     public let problem: HttpApiResponseProblem?
-    
+
     /**
      * - Parameter statusCode: The status code of the response.
      * - Parameter headers: The headers of the response

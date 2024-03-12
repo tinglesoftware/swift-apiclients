@@ -1,6 +1,6 @@
 //
 //  JsonPatchDocument.swift
-//  
+//
 //
 //  Created by Seth Onyango on 24/05/2020.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
@@ -12,8 +12,8 @@ public class JsonPatchDocument {
     public init() {}
 
     private var operations = [JsonPatchOperation]()
-    
-    
+
+
     /**
      * Add Operation. Will result in, for example
      * { "op": "add", "path": "/a/b/c", "value": [ "foo", "bar" ] }
@@ -25,8 +25,8 @@ public class JsonPatchDocument {
         operations.append(AddOperation(path: path, value: value))
         return self
     }
-    
-    
+
+
     /**
      * Remove value at target location, Will result in, for example,
      * { "op": "remove", "path": "/a/b/c" }
@@ -37,8 +37,8 @@ public class JsonPatchDocument {
         operations.append(RemoveOperation(path: path))
         return self
     }
-    
-    
+
+
     /**
      * Replace value, Will result in, for example,
      * { "op": "replace", "path": "/a/b/c", "value": foo }
@@ -50,7 +50,7 @@ public class JsonPatchDocument {
         operations.append(ReplaceOperation(path: path, value: value))
         return self
     }
-    
+
     /**
      * Test value, will result in, for example,
      * { "op": "test", "path": "/a/b/c", "value": foo }
@@ -62,7 +62,7 @@ public class JsonPatchDocument {
         operations.append(TestOperation(path: path, value: value))
         return self
     }
-    
+
     /**
      * Removes a value from a specified location and adds it to the target location, will result in,
      * for example,
@@ -75,7 +75,7 @@ public class JsonPatchDocument {
         operations.append(MoveOperation(path: from, value: path))
         return self
     }
-    
+
     /**
      * Copy the value at a specified location to the target location, will result in, for example,
      * { "op": "copy", "from": "/a/b/c", "path": "/a/b/e" }
@@ -87,7 +87,7 @@ public class JsonPatchDocument {
         operations.append(CopyOperation(path: from, value: path))
         return self
     }
-    
+
     public func getOperations() -> [JsonPatchOperation] {
         return operations
     }

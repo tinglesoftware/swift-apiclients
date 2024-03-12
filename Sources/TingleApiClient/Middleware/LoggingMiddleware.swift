@@ -1,6 +1,6 @@
 //
 //  LoggingMiddleware.swift
-//  
+//
 //
 //  Created by Maxwell Weru on 1/21/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
@@ -13,12 +13,12 @@ import Logging
  * An `TingleApiClientMiddleware` that logs the outgoing request (`URLRequest`) and the incoming response (`URLResponse`)
 */
 public final class LoggingMiddleware: TingleApiClientMiddleware {
-    
+
     private let logger: Logger
-    
+
     public var logLevel: Logger.Level
     public var level: Level
-    
+
     /**
      * Initialize an instance of `LoggingMiddleware` for using with an instance of `TingleApiClient`
      *
@@ -31,17 +31,17 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
         self.level = level
         self.logLevel = logLevel
     }
-    
+
     /**
      * Process a request before sending
-     * 
+     *
      * - Parameter request: The request that needs to be processed before sending
      */
     public func process(request: inout URLRequest) -> URLRequest {
         log(request: request)
         return request
     }
-    
+
     /**
      * Process a response received
      *
@@ -52,24 +52,24 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
     public func process(response: URLResponse?, data: Data?, error: Error?) {
         log(response: response, data: data, error: error)
     }
-    
+
     private func log(request: URLRequest) {
         if (level == .NONE) {
             return
         }
-        
+
         let logBody = level == .BODY;
         let logHeaders = logBody || level == .HEADERS;
-        
+
         let requestBody = request.httpBody
         let hasRequestBody = requestBody != nil;
         var requestStartMessage = "--> \(request.httpMethod!) \(request.url!)"
         if (!logHeaders && hasRequestBody) {
             requestStartMessage += " (\(requestBody!.count)-byte body)";
         }
-        
+
         logger.log(level: logLevel, Logger.Message(stringLiteral: requestStartMessage))
-        
+
         if (logHeaders) {
             if (hasRequestBody) {
                 // Request body headers are only present when installed as a network interceptor. Force
@@ -79,18 +79,18 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
                 }
                 logger.log(level: logLevel, "Content-Length: \(requestBody!.count)");
             }
-            
+
             request.allHTTPHeaderFields?.forEach({ (arg0) in
-                
+
                 let (key, value) = arg0
                 if ("Content-Type".caseInsensitiveCompare(key) != .orderedSame
                     && "Content-Length".caseInsensitiveCompare(key) != .orderedSame) {
-                    
+
                     let v = value // TODO: check if this headers should be redacted
                     logger.log(level: logLevel, "\(key): \(v)")
                 }
             })
-            
+
             if (!logBody || !hasRequestBody) {
                 logger.log(level: logLevel, "--> END \(request.httpMethod!)");
             } else if (request.bodyHasUnknownEncoding) {
@@ -106,34 +106,34 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
             }
         }
     }
-    
+
     private func log(response: URLResponse?, data: Data?, error: Error?) {
         if (error != nil) {
             logger.log(level: logLevel, "<-- HTTP FAILED: \(error.debugDescription)");
             return
         }
-        
+
         let response = response as? HTTPURLResponse
         if (response == nil) {
             // TODO: log this unormally
             return
         }
-        
+
         let logBody = level == .BODY;
         let logHeaders = logBody || level == .HEADERS;
-        
+
         let tookMs: Int64 = -1 // TODO: find a way of getting how long it took to get the response
         let responseBody = data
         let contentLength = responseBody?.count ?? -1
         let bodySize = contentLength != -1 ? "\(contentLength)-byte" : "unknown-length"
-        
+
         let startMessageTail = !logHeaders ? ", \(bodySize) body" : ""
         logger.log(level: logLevel, "<-- \(response!.statusCode) \(response!.url!) (\(tookMs)ms \(startMessageTail))");
-        
+
         if (logHeaders) {
-            
+
             response!.allHeaderFields.forEach({ (arg0) in
-                
+
                 let (key, value) = arg0
                 if let key = key as? String {
                     var raw_v = ""
@@ -146,7 +146,7 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
                     logger.log(level: logLevel, "\(key): \(v)")
                 }
             })
-            
+
             if (!logBody || !response!.hasBody) {
                 logger.log(level: logLevel, "<-- END HTTP");
             } else if (response!.bodyHasUnknownEncoding) {
@@ -158,21 +158,21 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
                     logger.log(level: logLevel, "<-- END HTTP (binary \(contentLength)-byte body omitted)");
                     return
                 }
-                
+
                 if (contentLength != 0) {
                     logger.log(level: logLevel, "");
                     logger.log(level: logLevel, Logger.Message(stringLiteral: bs!));
                 }
-                
+
                 logger.log(level: logLevel, "<-- END HTTP (\(contentLength)-byte body)");
             }
         }
     }
-    
+
     public enum Level {
         /** No logs. */
         case NONE
-        
+
         /**
          * Logs request and response lines.
          *
@@ -184,7 +184,7 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
          * ```
          */
         case BASIC
-        
+
         /**
          * Logs request and response lines and their respective headers.
          *
@@ -203,7 +203,7 @@ public final class LoggingMiddleware: TingleApiClientMiddleware {
          * ```
          */
         case HEADERS
-        
+
         /**
          * Logs request and response lines and their respective headers and bodies (if present).
          *

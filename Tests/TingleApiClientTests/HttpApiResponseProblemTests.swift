@@ -17,7 +17,7 @@ class HttpApiResponseProblemTest: XCTestCase {
         problem.detail = "Add more money!"
         problem.errors = Dictionary<String, [String]>()
         problem.errors!["SessionId"] = ["The SessionId is required"]
-        
+
         // serialize the problem and ensure that the produced value is the same
         let expectedJson = "{\"title\":\"insufficient_balance\",\"detail\":\"Add more money!\",\"errors\":{\"SessionId\":[\"The SessionId is required\"]}}"
         let encoder = JSONEncoder()
@@ -25,7 +25,7 @@ class HttpApiResponseProblemTest: XCTestCase {
         let actualJson = String(data: data, encoding: .utf8)!
         XCTAssertEqual(expectedJson, actualJson)
     }
-    
+
     func testDeserializationWorksWithErrors() {
         // serialize the problem and ensure that the produced value is the same
         let json = "{\"title\":\"insufficient_balance\",\"detail\":\"Add more money!\",\"errors\":{\"SessionId\":[\"The SessionId is required\"]}}"
@@ -41,7 +41,7 @@ class HttpApiResponseProblemTest: XCTestCase {
         XCTAssertEqual("SessionId", problem.errors!.first?.key)
         XCTAssertEqual("The SessionId is required", problem.errors!.first?.value.first)
     }
-    
+
     func testDeserializationWorksWithNoErrors() {
         // serialize the problem and ensure that the produced value is the same
         let json = "{\"title\":\"insufficient_balance\",\"detail\":\"Add more money!\"}"
@@ -54,7 +54,7 @@ class HttpApiResponseProblemTest: XCTestCase {
         XCTAssertEqual("Add more money!", problem.description)
         XCTAssertNil(problem.errors)
     }
-    
+
     func testProblemDetailsPrioritizesRFC3986() {
         // serialize the problem and ensure that the produced value is the same
         let json = "{\"title\":\"insufficient_balance\",\"detail\":\"who cares\",\"error_code\":\"zero_balance\",\"error_description\":\"go away\"}"

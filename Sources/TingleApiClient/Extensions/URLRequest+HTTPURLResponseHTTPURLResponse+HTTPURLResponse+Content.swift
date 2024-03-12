@@ -1,6 +1,6 @@
 //
 //  URLRequest+HTTPURLResponse+Content.swift
-//  
+//
 //
 //  Created by Maxwell Weru, Seth Onyango on 1/21/20.
 //  Copyright © 2020 TINGLE SOFTWARE COMPANY LTD. All rights reserved.
@@ -17,7 +17,7 @@ extension URLRequest {
             self.setValue(newValue, forHTTPHeaderField: "Content-Type")
         }
     }
-    
+
     public var contentLength: String?{
         get{
             self.value(forHTTPHeaderField: "Content-Length")
@@ -26,7 +26,7 @@ extension URLRequest {
             self.setValue(newValue, forHTTPHeaderField: "Content-Length")
         }
     }
-    
+
     public var bodyHasUnknownEncoding: Bool {
         get {
             let contentEncoding = self.value(forHTTPHeaderField: "Content-Encoding")
@@ -43,13 +43,13 @@ extension HTTPURLResponse {
             self.allHeaderFields["Content-Type"] as? String
         }
     }
-    
+
     public var transferEncoding: String? {
         get {
             self.allHeaderFields["Transfer-Encoding"] as? String
         }
     }
-    
+
     private var contentLength: Int64 {
         get {
             let raw = self.allHeaderFields["Content-Length", default: ""] as? String
@@ -59,7 +59,7 @@ extension HTTPURLResponse {
             return -1
         }
     }
-    
+
     var bodyHasUnknownEncoding: Bool {
         get {
             let contentEncoding = self.allHeaderFields["Content-Encoding"] as? String
@@ -68,27 +68,27 @@ extension HTTPURLResponse {
                         && contentEncoding!.caseInsensitiveCompare("gzip") != .orderedSame)
         }
     }
-    
+
     var hasBody: Bool {
         get {
             //            // HEAD requests never yield a body regardless of the response headers.
             //            if (response.request().method().equals("HEAD")) {
             //              return false;
             //            }
-            
+
             let responseCode = self.statusCode
             if ((responseCode < 100 || responseCode >= 200)
                     && responseCode != 204
                     && responseCode != 304) {
                 return true;
             }
-            
+
             // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
             // response is malformed. For best compatibility, we honor the headers.
             if (contentLength != -1 || "chunked".caseInsensitiveCompare(transferEncoding ?? "") == .orderedSame) {
                 return true;
             }
-            
+
             return false;
         }
     }

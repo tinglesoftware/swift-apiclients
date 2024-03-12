@@ -11,7 +11,7 @@ import XCTest
 
 
 class IntExtensionTest: XCTestCase{
-    
+
     func testFormatAbbreviated() {
         XCTAssertEqual(1_001.formatAbbreviated(), "1K")
         XCTAssertEqual(1_010.formatAbbreviated(), "1K")

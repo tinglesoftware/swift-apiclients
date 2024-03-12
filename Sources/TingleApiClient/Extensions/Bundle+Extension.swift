@@ -9,7 +9,7 @@
 import Foundation
 
 extension Bundle {
-    
+
     /**
      * The receiver's short version. Usually done in semantic versioning format
      *
@@ -18,7 +18,7 @@ extension Bundle {
     public var shortBundleVersion: String? {
         return infoDictionary?["CFBundleShortVersionString"] as? String
     }
-    
+
     /**
      * The receiver's bundle version. Usually an incrementing integer.
      *
