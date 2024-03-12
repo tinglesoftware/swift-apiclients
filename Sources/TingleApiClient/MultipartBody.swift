@@ -136,7 +136,7 @@ public class MultipartBody{
         
         
         public func build() throws -> MultipartBody {
-            if parts.isEmpty{ fatalError("Mutlipart body must have at least one part")}
+            if parts.isEmpty{ fatalError("Multipart body must have at least one part")}
             return MultipartBody(boundary: boundary, type: type, parts: parts)
         }
     }
