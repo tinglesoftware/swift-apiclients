@@ -2,8 +2,8 @@ name: Fix Whitespaces
 
 on:
   workflow_dispatch:
-#   schedule:
-#   - cron: '0 0 * * *'
+  schedule:
+  - cron: '0 0 * * *'
 
 jobs:
   build:
@@ -13,14 +13,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
     - name: Fix whitespaces
       uses: andreasabel/fix-whitespace-action@v1
       with:
         fix: true
         verbose: true
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: 'Fixes by fix-whitespace'
-        title: 'Whitespaces fix by fix-whitespace'
+        commit-message: Fix whitespaces
+        title: Fix whitespaces
+        branch: fix-whitespaces

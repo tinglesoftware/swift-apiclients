@@ -32,3 +32,4 @@ included-files:
   - "**/*"
 
 excluded-files:
+  - "*.plist"
