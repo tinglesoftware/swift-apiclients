@@ -1,10 +1,9 @@
-# TingleApiClient
-
+# `TingleApiClient`
 
 ![Swift](https://github.com/tinglesoftware/swift-apiclients/workflows/Swift/badge.svg)
 ![Language](https://img.shields.io/badge/language-Swift%205.0-orange.svg)
 
-TingleApiClient is a simple class for making api calls in iOS, macOS and tvOS apps. It has specific support for parsing errors and content.
+`TingleApiClient` is a simple class for making API calls in iOS, macOS and tvOS apps. It has specific support for parsing errors and content.
 This library eases working with HTTP APIs built by Tingle Software but can also work with other APIs.
 
 ## Usage (Simple Client)
@@ -108,7 +107,7 @@ See the samples project to see advanced usage
 
 ### Swift Package Manager
 
-TingleApiClient is available on SPM. Just add the following to your Package file:
+`TingleApiClient` is available on SPM. Just add the following to your Package file:
 
 ```swift
 import PackageDescription
@@ -124,7 +123,7 @@ let package = Package(
 
 Just drag the `Sources/*.swift` files into your project.
 
-## TingleApiClient properties
+## `TingleApiClient` properties
 
 ```swift
 encoder
@@ -138,14 +137,14 @@ decoder
 
 The instance of `JSONDecoder` to use in creating objects from JSON payloads
 
-## TingleApiClient methods
+## `TingleApiClient` methods
 
 ```swift
 init(session: URLSession? = nil, authenticationProvider: IAuthenticationProvider? = nil)
 init(_ authenticationProvider: IAuthenticationProvider)
 ```
 
-These methods create a new TingleApiClient instance that uses the session and authentication provider passed.
+These methods create a new `TingleApiClient` instance that uses the session and authentication provider passed.
 
 ```swift
 func buildMiddleware() -> [TingleApiClientMiddleware]
@@ -158,7 +157,7 @@ The `IAuthenticationProvider` is itself middleware dedicated towards authenticat
 func func setupJsonSerialization(encoder: JSONEncoder, decoder: JSONDecoder)
 ```
 
-Setups the instances of  `JSONEncoder` and `JSONDecoder` already created. These instances are used to encode/decode requests/responses respectively in the `send` functions
+Setups the instances of `JSONEncoder` and `JSONDecoder` already created. These instances are used to encode/decode requests/responses respectively in the `send` functions
 
 ```swift
 func sendRequest<TResource, TResourceResponse>(_ request: inout URLRequest,
@@ -166,8 +165,8 @@ func sendRequest<TResource, TResourceResponse>(_ request: inout URLRequest,
                                                _ completionHandler: @escaping (TResourceResponse?, Error?) -> Void) -> URLSessionTask
 ```
 
-This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and  `HttpApiResponseProblem`.
-These two are supplied to the `resultBuilder`  closure to produce a `TResourceResponse`.
+This method sends a HTTP request as per the details in the `request` parameter. The response is parsed to produce a `TResource` and `HttpApiResponseProblem`.
+These two are supplied to the `resultBuilder` closure to produce a `TResourceResponse`.
 When the network call fails such as there being no internet access or being unable to reach the server, the `resultBuilder` closure is not called. Instead,
 the `completionHandler` closure is called with the `TResourceResponse?` argument set to `nil` and the `Error?` argument not `nil`.
 When the network call succeeds, the `resultBuilder` closure is called to produce an instance of `TResourceResponse` and the result is passed to the
@@ -178,4 +177,4 @@ func sendRequest<TResource>(_ request: inout URLRequest,
                             _ completionHandler: @escaping (AnyResourceResponse<TResource>?, Error?) -> Void) -> URLSessionTask
 ```
 
-This is similar to calling the `sendRequest` method above but instead produces a `AnyResourceResponse<TResource, TProblem>`  for the `TResourceResponse`
+This is similar to calling the `sendRequest` method above but instead produces a `AnyResourceResponse<TResource, TProblem>` for the `TResourceResponse`
