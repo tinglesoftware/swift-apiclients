@@ -32,7 +32,16 @@ public class MultipartBody{
             }
 
             data.appendString("Content-Length: \(body.count)\r\n\r\n")
-
+            
+            var contentType = ""
+            if let _contentType = part.contentType {
+                contentType.append("Content-Type: \(_contentType)\r\n")
+            }
+            
+            if let contentTypeData = contentType.data(using: .utf8) {
+                data.append(contentTypeData)
+            }
+            
             data.append(body)
             data.appendString("\r\n")
         }
@@ -43,30 +52,42 @@ public class MultipartBody{
 
     struct Part{
         let headers: [String : String]?
+        
+        /// The data for this part.
         let body: Data
+        
+        /// The content type for this part.
+        ///
+        /// When omitted, the multipart/form-data standard assumes text/plain.
+        let contentType: String?
 
-        init(headers: [String: String]? = nil, body:Data ) {
+        init(headers: [String: String]? = nil, contentType: String? = nil, body:Data) {
             self.headers = headers
             self.body = body
+            self.contentType = contentType
         }
 
         static func create(body: Data) -> Part{
             return Part(body: body)
         }
+        
+        static func create(contentType: String, body: Data) -> Part{
+            return Part(contentType: contentType, body: body)
+        }
 
-        static func create(headers: [String: String]?, data:Data) throws -> Part{
+        static func create(headers: [String: String]?, contentType: String?=nil, data:Data) throws -> Part{
             if (headers == nil && headers!["Content-Type"] == nil) {
                 fatalError("Unexpected header: Content-Type")
             }
 
-            return Part(headers: headers, body: data)
+            return Part(headers: headers, contentType: contentType, body: data)
         }
 
         static func createFormData(name: String, value: String) -> Part{
             return createFormData(name: name, fileName: nil, body: value.data(using: .utf8)!)
         }
 
-        static func createFormData(name: String, fileName: String?, body: Data) -> Part{
+        static func createFormData(name: String, fileName: String?, contentType: String? = nil, body: Data) -> Part{
             var disposition = "form-data; name="
             disposition.appendQuotedString(key: name)
 
@@ -78,7 +99,7 @@ public class MultipartBody{
             var headers =  Dictionary<String,String>()
             headers["Content-Disposition"] = disposition
 
-            return try! create(headers: headers, data: body)
+            return try! create(headers: headers, contentType: contentType, data: body)
         }
     }
 
@@ -130,6 +151,15 @@ public class MultipartBody{
          */
         public func addFormDataPart(name: String, fileName: String, withData body:Data ) -> Self {
             let part = Part.createFormData(name: name, fileName: fileName, body: body)
+            let _ = addPart(part: part)
+            return self
+        }
+        
+        /**
+         * Add a part to the body.
+         */
+        public func addFormDataPart(name: String, fileName: String, contentType: String, withData body:Data ) -> Self {
+            let part = Part.createFormData(name: name, fileName: fileName, contentType: contentType, body: body)
             let _ = addPart(part: part)
             return self
         }
