@@ -32,16 +32,16 @@ public class MultipartBody{
             }
 
             data.appendString("Content-Length: \(body.count)\r\n\r\n")
-            
+
             var contentType = ""
             if let _contentType = part.contentType {
                 contentType.append("Content-Type: \(_contentType)\r\n")
             }
-            
+
             if let contentTypeData = contentType.data(using: .utf8) {
                 data.append(contentTypeData)
             }
-            
+
             data.append(body)
             data.appendString("\r\n")
         }
@@ -52,10 +52,10 @@ public class MultipartBody{
 
     struct Part{
         let headers: [String : String]?
-        
+
         /// The data for this part.
         let body: Data
-        
+
         /// The content type for this part.
         ///
         /// When omitted, the multipart/form-data standard assumes text/plain.
@@ -70,7 +70,7 @@ public class MultipartBody{
         static func create(body: Data) -> Part{
             return Part(body: body)
         }
-        
+
         static func create(contentType: String, body: Data) -> Part{
             return Part(contentType: contentType, body: body)
         }
@@ -154,7 +154,7 @@ public class MultipartBody{
             let _ = addPart(part: part)
             return self
         }
-        
+
         /**
          * Add a part to the body.
          */
