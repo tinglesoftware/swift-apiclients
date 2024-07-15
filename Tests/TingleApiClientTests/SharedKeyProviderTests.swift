@@ -17,7 +17,7 @@ class SharedKeyProviderTests: XCTestCase {
         let url = URL(string: "https://scoppe.people.tinglesoftware.com/api/v1.1/iprs?idNumber=12345678")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("Tue, 26 Dec 2017 23:09:28 GMT", forHTTPHeaderField: "x-ms-date")
+        request.setValue("Tue, 26 Dec 2017 23:09:28 GMT", forHTTPHeaderField: "x-ms-date") // RFC 1123
 
         // prepare the authentication provider
         let provider = SharedKeyAuthenticationProvider(base64Key: "TiR0p2ZwnUuBGBEDU5LADWBXpxXy3Y9Aq4Fb1nD+6CM=")
@@ -38,7 +38,7 @@ class SharedKeyProviderTests: XCTestCase {
         request.httpMethod = "POST"
         request.httpBody = "{}".data(using: .utf8)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Tue, 26 Dec 2017 23:09:28 GMT", forHTTPHeaderField: "x-ms-date")
+        request.setValue("Tue, 26 Dec 2017 23:09:28 GMT", forHTTPHeaderField: "x-ms-date") // RFC 1123
 
         // prepare the authentication provider
         let provider = SharedKeyAuthenticationProvider(base64Key: "TiR0p2ZwnUuBGBEDU5LADWBXpxXy3Y9Aq4Fb1nD+6CM=")
@@ -69,7 +69,8 @@ class SharedKeyProviderTests: XCTestCase {
         XCTAssertNotNil(headerValue)
         let formatter = DateFormatter()
         formatter.timeZone = TimeZone(identifier: "UTC")
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC
+        formatter.locale = Locale(identifier: "en_US_POSIX") // consistent regardless of the user's device
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC 1123
         let date = formatter.date(from: headerValue!)
         XCTAssertNotNil(date)
         XCTAssertTrue(date! < Date())
