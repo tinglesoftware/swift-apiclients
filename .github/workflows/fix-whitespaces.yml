@@ -3,7 +3,7 @@ name: Fix Whitespaces
 on:
   workflow_dispatch:
   schedule:
-  - cron: '0 0 * * *'
+  - cron: '0 0 * * *' # Every day at 00:00 UTC
 
 jobs:
   fix:
@@ -26,3 +26,4 @@ jobs:
         commit-message: Fix whitespaces
         title: Fix whitespaces
         branch: fix-whitespaces
+        delete-branch: true
