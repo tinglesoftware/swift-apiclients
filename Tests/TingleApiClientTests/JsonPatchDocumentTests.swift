@@ -18,6 +18,7 @@ class JsonPatchDocumentTest: XCTestCase {
 
         let expectedJson = "[{\"op\":\"replace\",\"path\":\"Name\",\"value\":\"Mr.Zero\"}]"
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         let data = try! encoder.encode(document.getOperations())
         let actualJson = String(data: data, encoding: .utf8)!
         XCTAssertEqual(expectedJson, actualJson)

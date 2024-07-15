@@ -19,8 +19,9 @@ class HttpApiResponseProblemTest: XCTestCase {
         problem.errors!["SessionId"] = ["The SessionId is required"]
 
         // serialize the problem and ensure that the produced value is the same
-        let expectedJson = "{\"title\":\"insufficient_balance\",\"detail\":\"Add more money!\",\"errors\":{\"SessionId\":[\"The SessionId is required\"]}}"
+        let expectedJson = "{\"detail\":\"Add more money!\",\"errors\":{\"SessionId\":[\"The SessionId is required\"]},\"title\":\"insufficient_balance\"}"
         let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
         let data = try! encoder.encode(problem)
         let actualJson = String(data: data, encoding: .utf8)!
         XCTAssertEqual(expectedJson, actualJson)
