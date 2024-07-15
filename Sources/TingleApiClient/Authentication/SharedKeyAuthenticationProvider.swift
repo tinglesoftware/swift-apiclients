@@ -96,7 +96,8 @@ public final class SharedKeyAuthenticationProvider: AuthenticationHeaderProvider
         if (rfcDate?.isEmpty ?? true) {
             let formatter = DateFormatter()
             formatter.timeZone = TimeZone(identifier: "UTC")
-            formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC
+            formatter.locale = Locale(identifier: "en_US_POSIX") // consistent regardless of the user's device
+            formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'" // RFC 1123
             rfcDate = formatter.string(from: Date())
             request.setValue(rfcDate, forHTTPHeaderField: dateHeaderName)
         }
